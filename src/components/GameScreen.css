@@ -1,0 +1,222 @@
+/* ── GameScreen Layout ──────────────────────────────────────────────────── */
+
+.game-screen {
+  min-height: 100vh;
+  width: 100%;
+  background-image: url('../assets/BG.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 20px 30px;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Nunito', sans-serif;
+}
+
+/* Clouds removed for sci-fi theme */
+
+/* ── Top bar ────────────────────────────────────────────────────────────── */
+.top-bar {
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  z-index: 2;
+}
+
+.question-counter {
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.4rem;
+  color: #fff;
+  background: rgba(30, 60, 90, 0.8);
+  border-radius: 30px;
+  padding: 8px 32px;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.2), 0 4px 10px rgba(0, 0, 0, 0.5);
+  letter-spacing: 1px;
+  backdrop-filter: blur(4px);
+}
+
+.progress-wrapper {
+  width: 100%;
+  max-width: 540px;
+  height: 14px;
+  background: #020617;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  margin-top: 4px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #38bdf8;
+  border-radius: 10px;
+  transition: width 0.6s ease;
+  box-shadow: 0 0 10px #38bdf8;
+}
+
+/* ── Arena ──────────────────────────────────────────────────────────────── */
+.arena {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+  position: relative;
+  z-index: 2;
+  flex: 1;
+}
+
+.arena-left {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.arena-right {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.arena-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+}
+
+/* ── Timer wrapper ──────────────────────────────────────────────────────── */
+.timer-wrapper {
+  width: 100%;
+  padding: 0 10px;
+  position: relative;
+}
+
+/* ── Status message ─────────────────────────────────────────────────────── */
+.status-msg {
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.1rem;
+  color: #fff;
+  background: rgba(30, 60, 90, 0.8);
+  border-radius: 30px;
+  padding: 8px 32px;
+  text-align: center;
+  backdrop-filter: blur(4px);
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.2), 0 4px 10px rgba(0, 0, 0, 0.5);
+  transition: background 0.3s, color 0.3s;
+  z-index: 3;
+}
+
+.middle-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 540px;
+  margin-top: -20px;
+  z-index: 3;
+}
+
+.status-msg.status-player {
+  background: rgba(34, 197, 94, 0.3);
+  border-color: #22c55e;
+  color: #dcfce7;
+}
+
+.status-msg.status-computer {
+  background: rgba(168, 85, 247, 0.3);
+  border-color: #a855f7;
+  color: #f3e8ff;
+}
+
+.status-msg.status-none {
+  background: rgba(245, 158, 11, 0.25);
+  border-color: #f59e0b;
+  color: #fef3c7;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .arena {
+    gap: 10px;
+  }
+
+  .arena-left {
+    transform: scale(0.6);
+    transform-origin: top left;
+    top: 10px;
+    left: 10px;
+  }
+
+  .arena-right {
+    transform: scale(0.6);
+    transform-origin: top right;
+    top: 10px;
+    right: 10px;
+  }
+
+  .question-counter {
+    font-size: 1.1rem;
+    padding: 2px 18px;
+  }
+}
+
+  /* ── Loading and Error Screens ─────────────────────────────────────────── */
+  .loading-screen,
+  .error-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    color: white;
+    text-align: center;
+    height: 100vh;
+  }
+
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .restart-btn {
+    padding: 12px 24px;
+    background: #f5c842;
+    border: none;
+    border-radius: 30px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #d9a020;
+    transition: transform 0.1s;
+  }
+
+  .restart-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #d9a020;
+  }

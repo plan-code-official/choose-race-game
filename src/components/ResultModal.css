@@ -1,0 +1,52 @@
+.result-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.4);
+  animation: fadeInModal 0.2s ease-out;
+  pointer-events: none; /* Let clicks pass through if needed, though it's temporary */
+}
+
+.result-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  padding: 40px 80px;
+  border-radius: 30px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  animation: popInResult 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.result-modal-content.correct {
+  background: linear-gradient(145deg, #166534, #14532d);
+  border: 4px solid #22c55e;
+}
+
+.result-modal-content.wrong {
+  background: linear-gradient(145deg, #991b1b, #7f1d1d);
+  border: 4px solid #ef4444;
+}
+
+.result-modal-icon {
+  font-size: 5rem;
+  line-height: 1;
+}
+
+.result-modal-text {
+  font-family: 'Fredoka One', cursive;
+  font-size: 4rem;
+  color: #fff;
+  margin: 0;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+@keyframes popInResult {
+  0% { opacity: 0; transform: scale(0.5); }
+  70% { transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}

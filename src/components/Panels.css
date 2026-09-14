@@ -1,0 +1,153 @@
+/* ── Panels shared CSS ──────────────────────────────────────────────────── */
+
+/* Player Panel */
+.player-panel,
+.computer-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Avatar wrapper */
+.avatar-wrapper {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.8rem;
+  transition: transform 0.2s;
+  background-image: url('../assets/Ellipse 252.png');
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: transparent;
+}
+
+.player-avatar,
+.computer-avatar {
+  /* Removed old linear gradients and borders as we now use the Ellipse image */
+  background-color: transparent;
+  border: none;
+}
+
+.avatar-emoji {
+  font-size: 2.6rem;
+  line-height: 1;
+}
+
+/* Star burst when round is won */
+.star-burst {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 1.4rem;
+  animation: spinStar 0.6s ease;
+}
+
+@keyframes spinStar {
+  from { transform: rotate(-180deg) scale(0); }
+  to   { transform: rotate(0deg) scale(1); }
+}
+
+/* Name tag */
+.player-name-tag,
+.computer-name-tag {
+  font-family: 'Fredoka One', cursive;
+  font-size: 1rem;
+  color: #fff;
+  background: #2563eb;
+  border-radius: 20px;
+  padding: 2px 16px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.computer-name-tag {
+  background: #7c3aed;
+}
+
+/* Score badge */
+.score-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 4px 12px;
+  border-radius: 20px;
+  backdrop-filter: blur(4px);
+}
+
+.coin-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.score-value {
+  min-width: 20px;
+  text-align: center;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+
+/* Winning highlight */
+.player-panel.winning .player-avatar,
+.computer-panel.winning .computer-avatar {
+  animation: glow-pulse 1.2s infinite;
+}
+
+/* Celebration bounce */
+.player-panel.celebrate .avatar-wrapper,
+.computer-panel.celebrate .avatar-wrapper {
+  animation: bounce 0.5s ease;
+}
+
+/* Thinking animation for computer */
+.computer-avatar.thinking {
+  animation: rock 1.2s infinite ease-in-out;
+}
+
+.thinking-dots {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.4rem;
+  color: #ffd700;
+  letter-spacing: 3px;
+}
+
+.thinking-dots span {
+  animation: blink 1.2s infinite;
+}
+
+.thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
+.thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0; }
+  40%           { opacity: 1; }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  40%      { transform: translateY(-14px); }
+  70%      { transform: translateY(-6px); }
+}
+
+@keyframes rock {
+  0%, 100% { transform: rotate(0deg); }
+  25%      { transform: rotate(-8deg); }
+  75%      { transform: rotate(8deg); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+  50%      { box-shadow: 0 0 24px rgba(253, 224, 71, 0.8); }
+}
