@@ -1,6 +1,6 @@
 import React from 'react';
 import './Panels.css';
-
+import daddCoin from "/src/assets/daddcoin.webp"
 interface PlayerPanelProps {
   score: number;
   isWinning: boolean;
@@ -15,7 +15,7 @@ const PlayerPanel: React.FC<PlayerPanelProps> = ({ score, isWinning, roundWon })
         {roundWon && <div className="star-burst">⭐</div>}
       </div>
       <div className="score-badge">
-        <img src="/src/assets/daddcoin.webp" alt="coin" className="coin-icon" />
+        <img src={daddCoin} alt="coin" className="coin-icon" />
         <span className="score-value">{score}</span>
       </div>
     </div>

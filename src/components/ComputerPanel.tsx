@@ -1,6 +1,6 @@
 import React from 'react';
 import './Panels.css';
-
+import daddCoins from "../assets/daddcoin.webp";
 interface ComputerPanelProps {
   score: number;
   isThinking: boolean;
@@ -17,7 +17,7 @@ const ComputerPanel: React.FC<ComputerPanelProps> = ({ score, isThinking, roundW
       </div>
       <div className="score-badge">
         <span className="score-value">{score}</span>
-        <img src="/src/assets/daddcoin.webp" alt="coin" className="coin-icon" />
+        <img src={daddCoins} alt="coin" className="coin-icon" />
       </div>
     </div>
   );
