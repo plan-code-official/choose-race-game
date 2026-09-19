@@ -28,7 +28,7 @@ export type Phase =
 export type AnswerResult = 'correct' | 'wrong' | 'timeout' | null;
 
 export interface GameState {
-  status: GameStatus;
+  status: 'loading' | 'welcome' | 'playing' | 'game-over' | 'error';
   lessonId: string | null;
   token: string | null;
   sessionId: string | null;

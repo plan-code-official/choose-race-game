@@ -1,0 +1,144 @@
+.welcome-screen-new {
+  position: fixed;
+  inset: 0;
+  direction: rtl;
+  background: radial-gradient(circle at center, #113645, #08171d);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  font-family: 'Fredoka One', cursive, sans-serif;
+}
+
+/* ── Header ───────────────────────────────────────────────────────── */
+.welcome-header {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 250px;
+  height: 60px;
+}
+
+.welcome-stats-bg {
+  direction: ltr; /* OVERRIDE RTL FOR STATS BAR */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.welcome-icon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.welcome-text {
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.welcome-separator {
+  color: #94a3b8;
+  font-size: 1.2rem;
+}
+
+.welcome-xp-text {
+  color: #facc15; /* Yellow XP text */
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* ── Body ─────────────────────────────────────────────────────────── */
+.welcome-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 20px;
+  margin-top: 60px; /* Space for absolute header */
+}
+
+.welcome-description {
+  max-width: 100%;
+  width: 600px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+}
+
+/* ── Footer ───────────────────────────────────────────────────────── */
+.welcome-footer {
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.welcome-start-btn {
+  background-color: transparent;
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  font-family: 'Fredoka One', cursive, sans-serif;
+  font-size: 2rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  width: 280px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 12px; /* Extra padding to vertically center on graphic */
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.welcome-start-btn:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+
+.welcome-start-btn:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.6) brightness(0.8);
+  font-size: 1.5rem;
+}
+
+/* ── Responsive Mobile Layout ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  .welcome-screen-new {
+    flex-direction: column;
+    justify-content: space-evenly;
+  }
+
+  .welcome-header {
+    position: relative;
+    top: 0;
+    right: 0;
+    margin-top: 20px;
+  }
+
+  .welcome-body {
+    margin-top: 0;
+    flex: 0 1 auto;
+  }
+
+  .welcome-description {
+    width: 90%;
+  }
+
+  .welcome-footer {
+    margin-bottom: 20px;
+  }
+}

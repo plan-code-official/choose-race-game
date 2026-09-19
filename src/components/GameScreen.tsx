@@ -6,10 +6,11 @@ import QuestionCard from './QuestionCard';
 import AnswerButtons from './AnswerButtons';
 import ScoreBoard from './ScoreBoard';
 import ResultModal from './ResultModal';
+import WelcomeScreen from './WelcomeScreen';
 import './GameScreen.css';
 
 const GameScreen: React.FC = () => {
-  const { state, currentQuestion, totalQuestions, playerAnswer, restart } = useGameLogic();
+  const { state, currentQuestion, totalQuestions, startGame, playerAnswer, restart } = useGameLogic();
 
   const {
     phase,
@@ -26,12 +27,13 @@ const GameScreen: React.FC = () => {
 
   const showResult = phase === 'result';
 
-  if (status === 'loading') {
+  if (status === 'loading' || status === 'welcome') {
     return (
-      <div className="game-screen loading-screen">
-        <div className="spinner"></div>
-        <h2>Loading game...</h2>
-      </div>
+      <WelcomeScreen
+        status={status}
+        totalQuestions={totalQuestions}
+        onStart={startGame}
+      />
     );
   }
 

@@ -90,12 +90,10 @@ export function useGameLogic() {
         
         setState((prev) => ({
           ...prev,
-          status: 'playing',
+          status: 'welcome',
           questions,
           sessionId,
         }));
-        
-        questionStartTime.current = Date.now();
       } catch (err: any) {
         setState((prev) => ({
           ...prev,
@@ -110,6 +108,11 @@ export function useGameLogic() {
 
   const currentQuestion = state.questions[state.currentQuestionIndex];
   const totalQuestions = state.questions.length;
+
+  const startGame = useCallback(() => {
+    setState((prev) => ({ ...prev, status: 'playing' }));
+    questionStartTime.current = Date.now();
+  }, []);
 
   // ── player answers ─────────────────────────────────────────────────────────
   const playerAnswer = useCallback(
@@ -208,6 +211,7 @@ export function useGameLogic() {
     state,
     currentQuestion,
     totalQuestions,
+    startGame,
     playerAnswer,
     nextQuestion,
     restart,
