@@ -1,6 +1,6 @@
 import React from 'react';
 import './Panels.css';
-import daddCoin from "/src/assets/daddcoin.webp"
+import daddCoin from '../assets/daddcoin.webp';
 interface PlayerPanelProps {
   score: number;
   isWinning: boolean;

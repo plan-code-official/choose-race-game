@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { GameState, Phase, AnswerResult, Question } from '../types';
 import { fetchQuestions, startGameSession, submitAnswers, completeSession, ApiQuestion } from '../services/api';
+import { getShuffledQuestions } from '../data/questions';
 import {
   playCorrectSound,
   playWrongSound,
@@ -157,8 +158,21 @@ export function useGameLogic() {
     if (state.currentQuestionIndex + 1 >= state.questions.length) {
       setState((prev) => ({ ...prev, status: 'loading' })); // Show loading while submitting
       try {
-        await submitAnswers(state.sessionId!, state.answersList, state.token!);
-        const finalStats = await completeSession(state.sessionId!, state.token!);
+        let finalStats = null;
+        if (state.sessionId === 'demo-session') {
+          const totalQ = Math.max(1, state.questions.length);
+          const pct = Math.round((state.playerScore / totalQ) * 100);
+          finalStats = {
+            score: pct,
+            percentage: pct,
+            stars: pct >= 80 ? 3 : pct >= 50 ? 2 : pct > 0 ? 1 : 0,
+            coins: state.playerScore * 2,
+            experience: state.playerScore * 10,
+          };
+        } else {
+          await submitAnswers(state.sessionId!, state.answersList, state.token!);
+          finalStats = await completeSession(state.sessionId!, state.token!);
+        }
         
         // Determine overall game winner sound
         const pWins = state.playerScore;
@@ -207,6 +221,17 @@ export function useGameLogic() {
     window.location.reload();
   }, []);
 
+  const loadDemoMode = useCallback(() => {
+    const demoQuestions = getShuffledQuestions().slice(0, 4);
+    setState({
+      ...makeInitialState(),
+      status: 'welcome',
+      questions: demoQuestions,
+      sessionId: 'demo-session',
+      token: 'demo-token',
+    });
+  }, []);
+
   return {
     state,
     currentQuestion,
@@ -215,5 +240,6 @@ export function useGameLogic() {
     playerAnswer,
     nextQuestion,
     restart,
+    loadDemoMode,
   };
 }
