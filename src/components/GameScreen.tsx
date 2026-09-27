@@ -62,7 +62,9 @@ const GameScreen: React.FC = () => {
 
   const showResult = phase === 'result';
 
-  if (status === 'loading' || status === 'welcome') {
+  const isInitialLoading = status === 'loading' && state.answersList.length === 0;
+
+  if (isInitialLoading || status === 'welcome') {
     return (
       <WelcomeScreen
         status={status}

@@ -189,6 +189,11 @@
   z-index: 1;
 }
 
+/* Make exit button background red */
+.results-action--exit .results-action__bg {
+  filter: sepia(1) saturate(1000%) hue-rotate(320deg) brightness(0.9);
+}
+
 /* The foreground content (Text + Icon) */
 .results-action__group {
   position: relative;
@@ -226,6 +231,7 @@
   font-weight: 900;
   text-shadow: 0 4px 12px rgba(0,0,0,0.5);
   margin-top: clamp(2px, 0.4vh, 6px);
+  padding-top: clamp(10px, 3vh, 30px);
   position: relative;
   top: clamp(4px, 0.6vh, 10px);
   animation: resultsItemIn 440ms 120ms ease-out both;

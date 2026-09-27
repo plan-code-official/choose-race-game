@@ -28,7 +28,8 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({
   onRetry,
   onBack,
 }) => {
-  const percent = score / totalScore;
+  const total = (correctAnswers + wrongAnswers) || 1;
+  const percent = correctAnswers / total;
   const isWinner = percent >= 0.5;
 
   return (
@@ -63,19 +64,19 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({
         </div>
 
         <div className="results-actions">
+          <button className="results-action results-action--exit" type="button" onClick={onBack}>
+            <img className="results-action__bg" src={buttonFrame} alt="" aria-hidden="true" />
+            <div className="results-action__group">
+              <span className="results-action__text">اخرج</span>
+              <img src={exitIcon} className="results-action__icon" alt="Exit" />
+            </div>
+          </button>
+
           <button className="results-action results-action--retry" type="button" onClick={onRetry}>
             <img className="results-action__bg" src={buttonFrame} alt="" aria-hidden="true" />
             <div className="results-action__group">
               <span className="results-action__text" style={{ color: '#84ebff' }}>ثانِيَةً</span>
               <img src={retryIcon} className="results-action__icon" alt="Retry" />
-            </div>
-          </button>
-
-          <button className="results-action" type="button" onClick={onBack}>
-            <img className="results-action__bg" src={buttonFrame} alt="" aria-hidden="true" />
-            <div className="results-action__group">
-              <span className="results-action__text">اخرج</span>
-              <img src={exitIcon} className="results-action__icon" alt="Exit" />
             </div>
           </button>
         </div>
