@@ -12,15 +12,13 @@ interface ResultModalProps {
 const ResultModal: React.FC<ResultModalProps> = ({ isCorrect }) => {
   return createPortal(
     <div className="result-modal-overlay">
-      <div className={`result-modal-content ${isCorrect ? 'correct' : 'wrong'}`}>
-        <img 
-          src={isCorrect ? rightImg : wrongImg} 
-          alt={isCorrect ? 'Correct' : 'Wrong'} 
-          className="result-modal-icon-img"
-        />
+      <div className={`result-modal-content ${isCorrect ? 'correct' : 'wrong'}`} dir="rtl">
         <h1 className="result-modal-text">
           {isCorrect ? 'أحسنت' : 'خطأ'}
         </h1>
+        <span className="result-modal-icon">
+          {isCorrect ? '✔' : '✖'}
+        </span>
       </div>
     </div>,
     document.body
