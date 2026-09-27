@@ -1,0 +1,259 @@
+.game-header-container {
+  width: 100%;
+  max-width: 900px;
+  background: rgba(255, 255, 255, 0.1); /* light translucent */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* keeps progress bar inside border radius */
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  direction: ltr; /* forced to LTR for precise flex layout */
+  margin-top: 10px;
+  margin-bottom: 30px; /* Space between header and question area */
+}
+
+.game-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  width: 100%;
+}
+
+.gh-spacer {
+  width: 45px; /* same as exit button to balance space-between */
+  flex-shrink: 0;
+}
+
+.gh-middle-group {
+  display: flex;
+  align-items: center;
+  gap: 60px; /* Increased space between players and question area */
+  flex: 1;
+  justify-content: center;
+}
+
+.gh-player {
+  display: flex;
+  align-items: center;
+}
+
+/* Avatar styling */
+.gh-avatar {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  object-fit: contain;
+  background-color: transparent;
+  z-index: 2;
+  /* Add slight shadow so it pops */
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+
+/* Score Pill */
+.gh-score-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  height: 38px;
+  padding: 0 12px;
+  color: white;
+  font-family: 'Fredoka One', cursive, sans-serif;
+  font-size: 1.3rem;
+  font-weight: bold;
+  z-index: 1;
+}
+
+/* Robot has avatar on left, pill on right */
+.gh-robot .gh-score-pill {
+  margin-left: -20px;
+  padding-left: 25px;
+}
+
+/* User has pill on left, avatar on right */
+.gh-user .gh-score-pill {
+  margin-right: -20px;
+  padding-right: 25px;
+}
+
+.gh-coin {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+/* Center Text */
+.gh-center-text {
+  text-align: center;
+  color: white;
+  font-family: 'Fredoka One', cursive, sans-serif;
+  min-width: 80px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+}
+
+.gh-title {
+  font-size: 1.4rem;
+  line-height: 1.2;
+}
+
+.gh-count {
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+
+/* Exit Button */
+.gh-exit-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.gh-exit-btn img {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+}
+
+.gh-exit-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Progress Bar */
+.gh-progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.gh-progress-fill {
+  height: 100%;
+  background: #71D9FF;
+  transition: width 0.3s ease;
+}
+
+/* ── Responsive Mobile (down to 280px) ──────────────────────────────── */
+@media (max-width: 600px) {
+  .game-header-container {
+    border-radius: 0 0 12px 12px;
+    margin-top: 0;
+    margin-bottom: 20px;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+  
+  .game-header-content {
+    padding: 6px 8px;
+  }
+  
+  .gh-middle-group {
+    gap: 15px; /* Increased from 10px */
+  }
+  
+  .gh-avatar {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .gh-score-pill {
+    height: 28px;
+    font-size: 1rem;
+    padding: 0 8px;
+  }
+  
+  .gh-robot .gh-score-pill {
+    margin-left: -15px;
+    padding-left: 20px;
+  }
+  
+  .gh-user .gh-score-pill {
+    margin-right: -15px;
+    padding-right: 20px;
+  }
+  
+  .gh-coin {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .gh-title {
+    font-size: 1.1rem;
+  }
+  
+  .gh-count {
+    font-size: 1.2rem;
+  }
+  
+  .gh-exit-btn img {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .gh-spacer {
+    width: 32px;
+  }
+}
+
+@media (max-width: 380px) {
+  .game-header-content {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .gh-exit-btn {
+    width: 100%;
+    margin-top: 15px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  
+  .gh-spacer {
+    display: none;
+  }
+
+  .gh-middle-group {
+    gap: 6px;
+  }
+  
+  .gh-avatar {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .gh-score-pill {
+    height: 24px;
+    font-size: 0.9rem;
+    border-radius: 12px;
+  }
+  
+  .gh-robot .gh-score-pill {
+    margin-left: -12px;
+    padding-left: 15px;
+  }
+  
+  .gh-user .gh-score-pill {
+    margin-right: -12px;
+    padding-right: 15px;
+  }
+  
+  .gh-title {
+    font-size: 0.9rem;
+  }
+  
+  .gh-count {
+    font-size: 1rem;
+  }
+}

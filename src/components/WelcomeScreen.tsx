@@ -5,6 +5,8 @@ import coinImg from '../assets/QuestionCoin.png';
 import statsBg from '../assets/QuestionNumber.png';
 import descriptionImg from '../assets/description.png';
 import startBtnBg from '../assets/startButton.png';
+import daddcoinImg from '../assets/daddcoin.webp';
+import exitBtnImg from '../assets/ExitButton.svg';
 
 interface WelcomeScreenProps {
   status: 'loading' | 'welcome';
@@ -18,15 +20,23 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ status, totalQuestions, o
 
   return (
     <div className="welcome-screen-new">
-      {/* ── Header ────────────────────────────────────────────── */}
-      <div className="welcome-header" style={{ backgroundImage: `url(${statsBg})` }}>
-        <div className="welcome-stats-bg">
-          <img src={coinImg} alt="Coin" className="welcome-icon" />
-          <span className="welcome-text">{isLoading ? '...' : totalQuestions}</span>
-          <span className="welcome-separator">&gt;</span>
-          <span className="welcome-xp-text">+{isLoading ? '...' : xpCount}</span>
-          <img src={coinImg} alt="DaddCoin" className="welcome-icon" />
+      {/* ── Top Bar ────────────────────────────────────────────── */}
+      <div className="welcome-top-bar">
+        {/* Left Side: Stats */}
+        <div className="welcome-stats" style={{ backgroundImage: `url(${statsBg})` }}>
+          <div className="welcome-stats-bg">
+            <img src={daddcoinImg} alt="DaddCoin" className="welcome-icon" />
+            <span className="welcome-text">{isLoading ? '...' : totalQuestions}</span>
+            <span className="welcome-separator">=</span>
+            <img src={coinImg} alt="Coin" className="welcome-icon" />
+            <span className="welcome-text">{isLoading ? '...' : totalQuestions}</span>
+          </div>
         </div>
+
+        {/* Right Side: Exit Button */}
+        <button className="welcome-exit-btn" onClick={() => window.location.href = '/'}>
+          <img src={exitBtnImg} alt="Exit Game" />
+        </button>
       </div>
 
       {/* ── Body ──────────────────────────────────────────────── */}

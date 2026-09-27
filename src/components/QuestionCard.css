@@ -9,8 +9,10 @@
 /* ── Image container ────────────────────────────────────────────────────── */
 .image-container {
   position: relative;
-  width: 800px;
+  width: 850px; /* Max requested width */
   max-width: 100%;
+  height: auto;
+  max-height: 38vh; /* Strict max-height to completely prevent scrolling */
   aspect-ratio: 1.6;
   background-image: url('../assets/question.png');
   background-size: 100% 100%;
@@ -170,6 +172,12 @@
   pointer-events: none;
   max-width: 90%;
   width: max-content;
+}
+
+@media (min-width: 601px) and (max-width: 850px) {
+  .image-container {
+    width: 600px;
+  }
 }
 
 @media (max-width: 600px) {

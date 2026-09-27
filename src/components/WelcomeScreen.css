@@ -12,10 +12,19 @@
 }
 
 /* ── Header ───────────────────────────────────────────────────────── */
-.welcome-header {
+.welcome-top-bar {
   position: absolute;
   top: 20px;
+  left: 20px;
   right: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  direction: ltr; /* forces left-to-right flex layout */
+  z-index: 10;
+}
+
+.welcome-stats {
   background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
@@ -25,6 +34,27 @@
   justify-content: center;
   min-width: 250px;
   height: 60px;
+}
+
+.welcome-exit-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.welcome-exit-btn img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.welcome-exit-btn:hover {
+  transform: scale(1.1);
 }
 
 .welcome-stats-bg {
@@ -122,12 +152,20 @@
     justify-content: space-evenly;
   }
 
-  .welcome-header {
+  .welcome-top-bar {
     position: relative;
     top: 0;
+    left: 0;
     right: 0;
+    width: 90%;
     margin-top: 20px;
   }
+  
+  .welcome-stats {
+    min-width: unset;
+    padding: 8px 15px;
+  }
+
 
   .welcome-body {
     margin-top: 0;
@@ -140,5 +178,32 @@
 
   .welcome-footer {
     margin-bottom: 20px;
+  }
+}
+
+/* ── Extra Small Screens (280px) ────────────────────────────────────── */
+@media (max-width: 340px) {
+  .welcome-top-bar {
+    flex-direction: column-reverse; /* Exit btn above stats, or vice versa */
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .welcome-stats {
+    height: 50px;
+  }
+  
+  .welcome-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .welcome-text {
+    font-size: 1rem;
+  }
+  
+  .welcome-exit-btn img {
+    width: 40px;
+    height: 40px;
   }
 }

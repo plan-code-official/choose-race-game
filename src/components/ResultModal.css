@@ -16,7 +16,8 @@
   align-items: center;
   justify-content: center;
   gap: 15px;
-  padding: 40px 80px;
+  width: min(90vw, 820px);
+  padding: clamp(10px, 4vh, 40px) clamp(10px, 4vw, 60px);
   border-radius: 30px;
   box-shadow: 0 10px 40px rgba(0,0,0,0.5);
   animation: popInResult 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -35,6 +36,13 @@
 .result-modal-icon {
   font-size: 5rem;
   line-height: 1;
+}
+
+.result-modal-icon-img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: -10px;
 }
 
 .result-modal-text {

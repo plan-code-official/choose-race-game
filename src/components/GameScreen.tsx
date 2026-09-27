@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useGameLogic } from '../hooks/useGameLogic';
-import PlayerPanel from './PlayerPanel';
-import ComputerPanel from './ComputerPanel';
+import GameHeader from './GameHeader';
 import QuestionCard from './QuestionCard';
 import AnswerButtons from './AnswerButtons';
 import Celebration from '../Celebration/Celebration';
@@ -11,7 +10,7 @@ import WelcomeScreen from './WelcomeScreen';
 import './GameScreen.css';
 
 const GameScreen: React.FC = () => {
-  const { state, currentQuestion, totalQuestions, startGame, playerAnswer, restart, loadDemoMode } = useGameLogic();
+  const { state, currentQuestion, totalQuestions, startGame, playerAnswer, restart } = useGameLogic();
 
   const [showCelebration, setShowCelebration] = useState(false);
   const [showResults, setShowResults] = useState(false);
@@ -32,14 +31,14 @@ const GameScreen: React.FC = () => {
   // Trigger celebration on win / game completion
   useEffect(() => {
     if (phase === 'game-over' && !showResults && !showCelebration) {
-      if (playerScore > 0) {
+      if (playerScore / totalQuestions > 0.5) {
         setShowCelebration(true);
       } else {
-        // When user did not answer any question or has 0 correct answers, do not display celebration
+        // When user did not answer enough correctly, do not display celebration
         setShowResults(true);
       }
     }
-  }, [phase, showResults, showCelebration, playerScore]);
+  }, [phase, showResults, showCelebration, playerScore, totalQuestions]);
 
   // Handle transition from Celebration to Results
   const handleCelebrationComplete = () => {
@@ -80,7 +79,6 @@ const GameScreen: React.FC = () => {
         <p>{error}</p>
         <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
           <button onClick={restart} className="restart-btn">Try Again</button>
-          <button onClick={loadDemoMode} className="restart-btn demo-btn" style={{ background: '#4CAF50' }}>🎮 تجربة اللعبة (Demo)</button>
         </div>
       </div>
     );
@@ -113,26 +111,16 @@ const GameScreen: React.FC = () => {
   return (
     <div className="game-screen">
 
-      {/* ── Top indicator ─────────────────────────────────────────────── */}
-      <div className="top-bar">
-        <div className="question-counter">
-          {String(currentQuestionIndex + 1).padStart(2, '0')} of {String(totalQuestions).padStart(2, '0')}
-        </div>
-      </div>
-
-
+      <GameHeader 
+        currentQuestionIndex={currentQuestionIndex}
+        totalQuestions={totalQuestions}
+        playerScore={playerScore}
+        computerScore={computerScore}
+        onExit={handleBack}
+      />
 
       {/* ── Main arena ───────────────────────────────────────────────────── */}
       <div className="arena">
-
-        {/* Left: Player */}
-        <div className="arena-left">
-          <PlayerPanel
-            score={playerScore}
-            isWinning={playerScore >= computerScore}
-            roundWon={playerResult === 'correct'}
-          />
-        </div>
 
         {/* Center: Question + Answers */}
         <div className="arena-center">
@@ -151,15 +139,6 @@ const GameScreen: React.FC = () => {
             computerAnswerIndex={computerAnswerIndex}
             phase={phase}
             onAnswer={playerAnswer}
-          />
-        </div>
-
-        {/* Right: Computer */}
-        <div className="arena-right">
-          <ComputerPanel
-            score={computerScore}
-            isThinking={false}
-            roundWon={computerResult === 'correct'}
           />
         </div>
       </div>
