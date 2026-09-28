@@ -104,7 +104,6 @@ const GameWelcomeScreen: React.FC<GameWelcomeScreenProps> = ({
             onClick={onStart}
             disabled={disabled}
           >
-            {isLoading ? 'جاري تحميل الأسئلة...' : ''}
           </button>
         </div>
       </footer>

@@ -129,7 +129,7 @@
   transition: transform .2s cubic-bezier(.175,.885,.32,1.275), filter .2s ease;
 }
 .gws-start-btn:hover:not(:disabled) { transform: scale(1.05); filter: brightness(1.1); }
-.gws-start-btn:disabled { cursor: not-allowed; filter: grayscale(.6) brightness(.8); font-size: 1.5rem; }
+.gws-start-btn:disabled { cursor: progress; filter: grayscale(.6) brightness(.8); font-size: 1.5rem; }
 
 .gws-exit-footer-btn {
   background: none; border: none; cursor: pointer; padding: 0;
