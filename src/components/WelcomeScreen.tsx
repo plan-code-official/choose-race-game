@@ -1,12 +1,13 @@
 import React from 'react';
-import './WelcomeScreen.css';
+import GameWelcomeScreen from './GameWelcomeScreen/GameWelcomeScreen';
 
-import coinImg from '../assets/QuestionCoin.png';
-import statsBg from '../assets/QuestionNumber.png';
-import descriptionImg from '../assets/description.png';
-import startBtnBg from '../assets/startButton.png';
-import daddcoinImg from '../assets/daddcoin.webp';
-import exitBtnImg from '../assets/ExitButton.svg';
+import bgImg        from '../assets/BG.png';
+import badgeBG      from '../assets/QuestionNumber.png';
+import qCoin        from '../assets/QuestionCoin.png';
+import daddCoin     from '../assets/daddcoin.webp';
+import description  from '../assets/description.png';
+import startBtn     from '../assets/start_transparent.png';
+import exitBtn      from '../assets/exit_transparent.png';
 
 interface WelcomeScreenProps {
   status: 'loading' | 'welcome';
@@ -16,46 +17,26 @@ interface WelcomeScreenProps {
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ status, totalQuestions, onStart }) => {
   const isLoading = status === 'loading';
-  const xpCount = totalQuestions * 10;
 
   return (
-    <div className="welcome-screen-new">
-      {/* ── Top Bar ────────────────────────────────────────────── */}
-      <div className="welcome-top-bar">
-        {/* Left Side: Stats */}
-        <div className="welcome-stats" style={{ backgroundImage: `url(${statsBg})` }}>
-          <div className="welcome-stats-bg">
-            <img src={daddcoinImg} alt="DaddCoin" className="welcome-icon" />
-            <span className="welcome-text">{isLoading ? '...' : totalQuestions}</span>
-            <span className="welcome-separator">=</span>
-            <img src={coinImg} alt="Coin" className="welcome-icon" />
-            <span className="welcome-text">{isLoading ? '...' : totalQuestions}</span>
-          </div>
-        </div>
-
-        {/* Right Side: Exit Button */}
-        <button className="welcome-exit-btn" onClick={() => window.location.href = '/'}>
-          <img src={exitBtnImg} alt="Exit Game" />
-        </button>
-      </div>
-
-      {/* ── Body ──────────────────────────────────────────────── */}
-      <div className="welcome-body">
-        <img src={descriptionImg} alt="How to play" className="welcome-description" />
-      </div>
-
-      {/* ── Footer ────────────────────────────────────────────── */}
-      <div className="welcome-footer">
-        <button
-          className={`welcome-start-btn ${isLoading ? 'loading' : ''}`}
-          style={{ backgroundImage: `url(${startBtnBg})` }}
-          onClick={onStart}
-          disabled={isLoading}
-        >
-          {isLoading ? 'تحميل' : 'ابدَأ!'}
-        </button>
-      </div>
-    </div>
+    <GameWelcomeScreen
+      backgroundImage={bgImg}
+      statsBgImage={badgeBG}
+      statLeftIcon={qCoin}
+      statLeftAlt="Questions"
+      statLeftValue={totalQuestions}
+      statRightValue={totalQuestions}
+      statRightIcon={daddCoin}
+      statRightAlt="Dadd Points"
+      heroImage={description}
+      heroAlt="How to Play"
+      startButtonImage={startBtn}
+      exitButtonImage={exitBtn}
+      onStart={onStart}
+      onExit={() => window.location.href = '/'}
+      isLoading={isLoading}
+      isReady={totalQuestions > 0}
+    />
   );
 };
 
