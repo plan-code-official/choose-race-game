@@ -42,7 +42,7 @@ function mapApiQuestion(q: ApiQuestion): Question {
   
   // If the API provided an imageUrl on the question, use it. 
   // Otherwise, fallback to the question string itself if it looks like a URL, or null.
-  let imageUrl = q.imageUrl;
+  let imageUrl = q.imageUrl || q.options?.find((option) => option.imageUrl)?.imageUrl || null;
   if (!imageUrl && q.question.startsWith('http')) {
     imageUrl = q.question;
   }
@@ -56,7 +56,7 @@ function mapApiQuestion(q: ApiQuestion): Question {
     options,
     correctIndex: correctIndex >= 0 ? correctIndex : 0, // Fallback if correct answer not in options (shouldn't happen)
     audioText: q.audioUrl || q.question, // Just fallback to question text for audio
-    apiAudioUrl: q.audioUrl || null,
+    apiAudioUrl: q.audioUrl || q.options?.find((option) => option.audioUrl)?.audioUrl || null,
     category: 'api',
   };
 }

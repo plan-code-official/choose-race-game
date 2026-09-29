@@ -4,7 +4,8 @@ import celebrationTitle from './assets/good.png';
 import coinsImage from './assets/money.png';
 import correctImage from './assets/right.png';
 import wrongImage from './assets/wrong.png';
-import buttonFrame from './assets/boutton.png';
+import exitButtonImage from '../../src/assets/exit.png';
+import retryButtonImage from '../../src/assets/retry.png';
 
 const numberValue = (value) => {
   const parsed = Number(value);
@@ -31,22 +32,25 @@ export class ResultsPanel {
     const panel = document.createElement("div");
     panel.className = "results-panel";
     panel.style.setProperty("--results-panel-image", `url(${panelFrame})`);
+    const panelFrameImg = document.createElement("img");
+    panelFrameImg.className = "results-panel__frame";
+    panelFrameImg.src = panelFrame;
+    panelFrameImg.alt = "";
+    panelFrameImg.setAttribute("aria-hidden", "true");
+    panel.append(panelFrameImg);
 
     const content = document.createElement("div");
     content.className = "results-panel__content";
 
-    const titleImg = document.createElement("img");
-    titleImg.className = "results-panel__title";
-    titleImg.src = celebrationTitle;
-    titleImg.alt = "أحسنت";
+    this.titleImg = document.createElement("img");
+    this.titleImg.className = "results-panel__title";
+    this.titleImg.src = celebrationTitle;
+    this.titleImg.alt = "أحسنت";
 
-    const scoreCard = document.createElement("div");
-    scoreCard.className = "results-score-card";
-    const scoreLabel = document.createElement("span");
-    scoreLabel.className = "results-score-card__label";
-    scoreLabel.textContent = "الدَّرَجَةُ";
-    this.scoreText = document.createElement("strong");
-    scoreCard.append(scoreLabel, this.scoreText);
+    this.titleFail = document.createElement("div");
+    this.titleFail.className = "results-panel__fail-title";
+    this.titleFail.textContent = "حاول مرة أخرى!";
+    this.titleFail.style.display = "none";
 
     const stats = document.createElement("div");
     stats.className = "results-stats";
@@ -79,7 +83,7 @@ export class ResultsPanel {
     wrongCard.append(wrongImg, this.wrongText);
 
     stats.append(correctCard, coinsCard, wrongCard);
-    content.append(titleImg, scoreCard, stats);
+    content.append(this.titleImg, this.titleFail, stats);
     panel.append(content);
 
     const actions = document.createElement("div");
@@ -90,34 +94,22 @@ export class ResultsPanel {
     backBtn.type = "button";
     backBtn.onclick = () => { if (this.onBack) this.onBack(); };
     const backBtnImg = document.createElement("img");
-    backBtnImg.src = buttonFrame;
-    backBtnImg.alt = "";
+    backBtnImg.className = "results-action__bg";
+    backBtnImg.src = exitButtonImage;
+    backBtnImg.alt = "خروج";
     backBtnImg.setAttribute("aria-hidden", "true");
-    const backGrp = document.createElement("span");
-    backGrp.className = "results-action__group";
-    const backTxt = document.createElement("span");
-    backTxt.textContent = "ارْجِعْ";
-    const backIcon = document.createElement("span");
-    backIcon.className = "results-action__exit-icon";
-    backIcon.setAttribute("aria-hidden", "true");
-    backIcon.textContent = "⎋";
-    backGrp.append(backTxt, backIcon);
-    backBtn.append(backBtnImg, backGrp);
+    backBtn.append(backBtnImg);
 
     const retryBtn = document.createElement("button");
     retryBtn.className = "results-action results-action--retry";
     retryBtn.type = "button";
     retryBtn.onclick = () => { if (this.onRetry) this.onRetry(); };
     const retryBtnImg = document.createElement("img");
-    retryBtnImg.src = buttonFrame;
-    retryBtnImg.alt = "";
+    retryBtnImg.className = "results-action__bg";
+    retryBtnImg.src = retryButtonImage;
+    retryBtnImg.alt = "إعادة المحاولة";
     retryBtnImg.setAttribute("aria-hidden", "true");
-    const retryIcon = document.createElement("span");
-    retryIcon.setAttribute("aria-hidden", "true");
-    retryIcon.textContent = "↻";
-    const retryTxt = document.createElement("span");
-    retryTxt.textContent = "ثانِيَةً";
-    retryBtn.append(retryBtnImg, retryIcon, retryTxt);
+    retryBtn.append(retryBtnImg);
 
     actions.append(backBtn, retryBtn);
     screen.append(panel, actions);
@@ -125,16 +117,18 @@ export class ResultsPanel {
   }
 
   show(data = {}) {
-    const finalScore = numberValue(data.score);
-    const maximumScore = numberValue(data.totalScore) || 100;
     const correct = numberValue(data.correctAnswers);
     const wrong = numberValue(data.wrongAnswers);
     const earnedCoins = numberValue(data.coins);
 
-    this.scoreText.textContent = `${finalScore}/${maximumScore}`;
     this.correctText.textContent = correct;
     this.wrongText.textContent = wrong;
     this.coinsText.textContent = `+${earnedCoins}`;
+
+    const totalAnswers = correct + wrong;
+    const isSuccess = totalAnswers > 0 && correct / totalAnswers >= 0.5;
+    this.titleImg.style.display = isSuccess ? "block" : "none";
+    this.titleFail.style.display = isSuccess ? "none" : "block";
 
     this.root.appendChild(this.el);
   }

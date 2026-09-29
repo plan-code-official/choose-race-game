@@ -68,6 +68,7 @@
   transition: transform 0.15s, background 0.15s;
   flex-shrink: 0;
 }
+.sound-btn svg { width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 
 .sound-btn:hover {
   transform: scale(1.15);

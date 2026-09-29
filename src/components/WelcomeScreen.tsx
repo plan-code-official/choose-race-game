@@ -52,7 +52,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ status, totalQuestions, o
           onClick={onStart}
           disabled={isLoading}
         >
-          {isLoading ? 'جاري تحميل الأسئلة...' : 'ابدَأ!'}
+          {isLoading ? 'تحميل' : 'ابدَأ!'}
         </button>
       </div>
     </div>

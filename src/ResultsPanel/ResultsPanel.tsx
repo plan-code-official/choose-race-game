@@ -5,9 +5,8 @@ import celebrationTitle from '../../ResultsPanel/ResultsPanel/assets/good.png';
 import coinsImage from '../../ResultsPanel/ResultsPanel/assets/money.png';
 import correctImage from '../../ResultsPanel/ResultsPanel/assets/right.png';
 import wrongImage from '../../ResultsPanel/ResultsPanel/assets/wrong.png';
-import buttonFrame from '../../ResultsPanel/ResultsPanel/assets/boutton.png';
-import exitIcon from '../assets/ExitButton.svg';
-import retryIcon from '../assets/retry.png';
+import exitButtonImage from '../assets/exit.png';
+import retryButtonImage from '../assets/retry.png';
 
 export interface ResultsPanelProps {
   score: number;
@@ -36,11 +35,12 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({
     <div className="results-overlay">
       <section className="results-screen" aria-label="نتائج اللعبة" dir="rtl">
         <div className="results-panel" style={{ '--results-panel-image': `url(${panelFrame})` } as any}>
+          <img className="results-panel__frame" src={panelFrame} alt="" aria-hidden="true" />
           <div className="results-panel__content">
             {isWinner ? (
               <img src={celebrationTitle} alt="أحسنت" className="results-panel__title" />
             ) : (
-              <h1 className="results-panel__title-text">حاول مرة أخرى</h1>
+              <h1 className="results-panel__fail-title">حاول مرة أخرى!</h1>
             )}
 
             <div className="results-stats">
@@ -65,19 +65,11 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({
 
         <div className="results-actions">
           <button className="results-action results-action--exit" type="button" onClick={onBack}>
-            <img className="results-action__bg" src={buttonFrame} alt="" aria-hidden="true" />
-            <div className="results-action__group">
-              <span className="results-action__text">اخرج</span>
-              <img src={exitIcon} className="results-action__icon" alt="Exit" />
-            </div>
+            <img className="results-action__bg" src={exitButtonImage} alt="خروج" />
           </button>
 
           <button className="results-action results-action--retry" type="button" onClick={onRetry}>
-            <img className="results-action__bg" src={buttonFrame} alt="" aria-hidden="true" />
-            <div className="results-action__group">
-              <span className="results-action__text" style={{ color: '#84ebff' }}>ثانِيَةً</span>
-              <img src={retryIcon} className="results-action__icon" alt="Retry" />
-            </div>
+            <img className="results-action__bg" src={retryButtonImage} alt="إعادة المحاولة" />
           </button>
         </div>
       </section>

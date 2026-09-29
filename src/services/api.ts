@@ -4,7 +4,7 @@ const GAME_ID = 13;
 export interface ApiQuestion {
   id: number;
   question: string;
-  options: { text: string; imageUrl: string | null }[];
+  options: { text: string; imageUrl: string | null; audioUrl?: string | null }[];
   correctAnswer: string;
   points: number;
   timeLimit: number;
