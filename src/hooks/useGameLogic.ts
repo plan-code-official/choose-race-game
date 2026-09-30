@@ -37,6 +37,7 @@ function mapApiQuestion(q: ApiQuestion): Question {
   const options = q.options.map((o) => ({
     text: o.text,
     imageUrl: o.imageUrl,
+    audioUrl: o.audioUrl || null,
   }));
   const correctIndex = q.options.findIndex((o) => o.text === q.correctAnswer);
   

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Question } from '../types';
-import { speak } from '../utils/tts';
 import './QuestionCard.css';
 import ImageModal from './ImageModal';
 
@@ -12,10 +11,6 @@ interface QuestionCardProps {
 const QuestionCard: React.FC<QuestionCardProps> = ({ question, showResult }) => {
   const [imgError, setImgError] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleSpeakAnswer = () => {
-    speak(question.audioText);
-  };
 
   const handlePlayAudio = () => {
     if (question.apiAudioUrl) {
@@ -61,9 +56,10 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, showResult }) => 
               <button
                 className="sound-btn image-sound-btn"
                 title="Listen to audio"
+                aria-label="تشغيل صوت السؤال"
                 onClick={handlePlayAudio}
               >
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h3l4 3V7l-4 3H4Z"/><path d="M15 9a4 4 0 0 1 0 6M17.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
               </button>
             )}
           </div>

@@ -3,6 +3,7 @@
 export interface Option {
   text: string;
   imageUrl: string | null;
+  audioUrl?: string | null;
 }
 
 export interface Question {
