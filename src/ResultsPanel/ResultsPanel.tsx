@@ -29,6 +29,7 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({
 }) => {
   const total = (correctAnswers + wrongAnswers) || 1;
   const percent = correctAnswers / total;
+  const correctPercent = Math.round(percent * 100);
   const isWinner = percent >= 0.5;
 
   return (
@@ -43,10 +44,15 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({
               <h1 className="results-panel__fail-title">حاول مرة أخرى!</h1>
             )}
 
+            <div className="results-grade" aria-label={`الدرجة ${correctPercent} من 100`}>
+              <span>الدَّرَجَة</span>
+              <strong>{correctPercent}/100</strong>
+            </div>
+
             <div className="results-stats">
               <div className="results-stat-card results-stat-card--correct">
                 <img src={correctImage} alt="إجابات صحيحة" />
-                <strong>{correctAnswers}</strong>
+                  <strong>{correctAnswers}</strong>
               </div>
 
               <div className="results-stat-card results-stat-card--coins">
@@ -57,7 +63,7 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({
 
               <div className="results-stat-card results-stat-card--wrong">
                 <img src={wrongImage} alt="إجابات خاطئة" />
-                <strong>{wrongAnswers}</strong>
+                  <strong>{wrongAnswers}</strong>
               </div>
             </div>
           </div>
