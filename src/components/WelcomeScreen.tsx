@@ -1,5 +1,5 @@
 import React from 'react';
-import './WelcomeScreen.css';
+import GameWelcomeScreen from './GameWelcomeScreen/GameWelcomeScreen';
 
 import coinImg from '../assets/QuestionCoin.png';
 import statsBg from '../assets/QuestionNumber.png';
@@ -16,7 +16,6 @@ interface WelcomeScreenProps {
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ status, totalQuestions, onStart }) => {
   const isLoading = status === 'loading';
-  const xpCount = totalQuestions * 10;
 
   return (
     <div className="welcome-screen-new">

@@ -5,7 +5,7 @@ import celebrationTitle from '../../ResultsPanel/ResultsPanel/assets/good.png';
 import coinsImage from '../../ResultsPanel/ResultsPanel/assets/money.png';
 import correctImage from '../../ResultsPanel/ResultsPanel/assets/right.png';
 import wrongImage from '../../ResultsPanel/ResultsPanel/assets/wrong.png';
-import exitButtonImage from '../assets/exit.png';
+import exitButtonImage from '../assets/Exit.png';
 import retryButtonImage from '../assets/retry.png';
 
 export interface ResultsPanelProps {
