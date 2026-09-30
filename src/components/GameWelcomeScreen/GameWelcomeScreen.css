@@ -8,6 +8,10 @@
 .gws-screen {
   position: fixed;
   inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
   direction: rtl;
   background-size: cover;
   background-position: center;
@@ -15,7 +19,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  padding: clamp(8px, 1.8vh, 22px) clamp(10px, 2vw, 28px);
+  overflow: hidden;
   z-index: 9999;
   font-family: 'Fredoka One', cursive, sans-serif;
 }
@@ -31,13 +37,12 @@
 
 /* ── Header ───────────────────────────────────────────────────── */
 .gws-header {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  right: 60px;
-  height: 60px;
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: auto;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: flex-start;
   direction: ltr;
   z-index: 10;
@@ -47,51 +52,56 @@
   background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
-  padding: 5px 25px;
+  padding: 4px clamp(12px, 2vw, 25px);
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 250px;
-  height: 60px;
+  width: fit-content;
+  min-width: min(210px, 100%);
+  max-width: 100%;
+  height: clamp(42px, 7vh, 60px);
+  flex: 0 0 auto;
 }
 
 .gws-stats-inner {
   direction: ltr;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: clamp(6px, 1.2vw, 15px);
   color: #fff;
   font-size: 22px;
   font-weight: bold;
 }
 
-.gws-stat-icon { width: clamp(22px, 5vw, 35px); height: clamp(22px, 5vw, 35px); object-fit: contain; }
-.gws-stat-value { color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,.5); font-size: 22px; }
-.gws-stat-value--highlight { color: #f9d00f; text-shadow: 0 2px 4px rgba(0,0,0,.5); font-size: 22px; }
+.gws-stat-icon { display: block; width: clamp(22px, 4.5vh, 35px); height: clamp(22px, 4.5vh, 35px); flex: 0 0 auto; object-fit: contain; }
+.gws-stat-value { color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,.5); font-size: clamp(16px, 3vh, 22px); }
+.gws-stat-value--highlight { color: #f9d00f; text-shadow: 0 2px 4px rgba(0,0,0,.5); font-size: clamp(16px, 3vh, 22px); }
 .gws-stat-separator { color: #94a3b8; font-size: 1.2rem; }
 
 /* ── Body ─────────────────────────────────────────────────────── */
 .gws-body {
   position: relative;
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  max-width: 800px;
-  margin-top: auto;
-  margin-bottom: auto;
-  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: clamp(4px, 1.5vh, 16px);
+  overflow: hidden;
   z-index: 1;
 }
 
 .gws-hero-img {
-  width: 95%; 
-  max-width: clamp(350px, 90vw, 1000px); 
-  max-height: clamp(250px, 60vh, 550px); 
+  display: block;
+  width: min(92%, 900px, 82dvh);
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
   filter: drop-shadow(0 15px 25px rgba(0,0,0,0.4));
-  transform: translateY(-5px);
+  transform: none;
   transition: transform .3s cubic-bezier(.175,.885,.32,1.275), filter .3s ease;
 }
 .gws-hero-img:hover { 
@@ -102,8 +112,9 @@
 /* ── Footer ───────────────────────────────────────────────────── */
 .gws-footer {
   position: relative; 
-  margin-bottom: 8vh;
-  width: 100%; 
+  margin: 0;
+  width: 100%;
+  flex: 0 0 auto;
   display: flex; 
   justify-content: center; 
   z-index: 1;
@@ -112,8 +123,9 @@
   display: flex; 
   align-items: center; 
   justify-content: center; 
-  flex-wrap: wrap;
-  gap: clamp(30px, 6vw, 60px);
+  flex-wrap: nowrap;
+  width: min(100%, 620px);
+  gap: clamp(8px, 3vw, 28px);
 }
 
 .gws-start-btn {
@@ -121,11 +133,14 @@
   background-size: 100% 100%; background-position: center; background-repeat: no-repeat;
   border: none; cursor: pointer;
   color: #fff; font-family: 'Fredoka One', cursive, sans-serif;
-  font-size: 2rem; text-shadow: 0 2px 4px rgba(0,0,0,.5);
-  width: clamp(160px, 30vw, 280px); 
-  height: clamp(55px, 10vw, 90px);
+  font-size: clamp(1rem, 3vw, 2rem); text-shadow: 0 2px 4px rgba(0,0,0,.5);
+  width: clamp(112px, 24vw, 260px);
+  min-width: 0;
+  height: auto;
+  aspect-ratio: 565 / 231;
+  flex: 1 1 0;
   display: flex; align-items: center; justify-content: center;
-  padding-bottom: 12px;
+  padding: 0 6px;
   transition: transform .2s cubic-bezier(.175,.885,.32,1.275), filter .2s ease;
 }
 .gws-start-btn:hover:not(:disabled) { transform: scale(1.05); filter: brightness(1.1); }
@@ -135,22 +150,30 @@
   background: none; border: none; cursor: pointer; padding: 0;
   display: flex; align-items: center; justify-content: center;
   transition: transform .2s ease;
-  width: clamp(160px, 30vw, 280px); 
-  height: clamp(55px, 10vw, 90px);
+  width: clamp(112px, 24vw, 260px);
+  min-width: 0;
+  height: auto;
+  aspect-ratio: 565 / 231;
+  flex: 1 1 0;
 }
 .gws-exit-footer-btn img { 
+  display: block;
   width: 100%; 
   height: 100%; 
-  object-fit: fill; 
+  object-fit: contain;
 }
 .gws-exit-footer-btn:hover { transform: scale(1.1); }
 
 /* ── Responsive ───────────────────────────────────────────────── */
 @media (max-width: 950px) {
-  .gws-hero-img { 
-    max-width: 600px; 
-    max-height: 60vh; 
+  .gws-footer { padding-inline: 2px; }
+  .gws-footer-buttons { gap: clamp(6px, 2vw, 16px); }
+  .gws-start-btn, .gws-exit-footer-btn {
+    width: clamp(105px, 38vw, 190px);
+    max-width: calc((100vw - 48px) / 2);
+    flex: 1 1 0;
   }
+  .gws-hero-img { width: min(88%, 620px, 64dvh); }
 }
 
 @media (max-width: 900px) and (max-height: 500px) {
@@ -159,11 +182,11 @@
     gap: 10px;
   }
   .gws-header { 
-    top: 5px; 
+    top: auto;
     height: 40px; 
   }
   .gws-stats-bg { 
-    min-width: 180px; 
+    min-width: 0;
     height: 40px; 
   }
   .gws-stat-value, .gws-stat-value--highlight { 
@@ -173,17 +196,16 @@
     font-size: 14px;
   }
   .gws-start-btn { 
-    width: clamp(150px, 25vw, 180px); 
-    height: clamp(50px, 8vw, 65px); 
+    width: clamp(100px, 22vw, 160px);
+    height: auto;
     font-size: 1.2rem;
   }
   .gws-exit-footer-btn { 
-    width: clamp(150px, 25vw, 180px); 
-    height: clamp(50px, 8vw, 65px); 
+    width: clamp(100px, 22vw, 160px);
+    height: auto;
   }
   .gws-hero-img { 
     max-width: 350px; 
     max-height: 60vh; 
   }
 }
-

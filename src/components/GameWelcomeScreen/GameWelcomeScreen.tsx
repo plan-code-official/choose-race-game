@@ -25,6 +25,8 @@ interface GameWelcomeScreenProps {
   exitButtonImage: string;
   /** Called when the Start button is clicked */
   onStart: () => void;
+  /** Optional label shown over the start graphic */
+  startLabel?: string;
   /** Called when the Exit button is clicked; defaults to window.history.back() */
   onExit?: () => void;
   /** Disables start button while data is loading */
@@ -47,6 +49,7 @@ const GameWelcomeScreen: React.FC<GameWelcomeScreenProps> = ({
   startButtonImage,
   exitButtonImage,
   onStart,
+  startLabel = '',
   onExit,
   isLoading = false,
   isReady = true,
@@ -104,6 +107,7 @@ const GameWelcomeScreen: React.FC<GameWelcomeScreenProps> = ({
             onClick={onStart}
             disabled={disabled}
           >
+            {startLabel}
           </button>
         </div>
       </footer>

@@ -1,6 +1,6 @@
 import React from 'react';
 import GameWelcomeScreen from './GameWelcomeScreen/GameWelcomeScreen';
-
+import BG from '../assets/BG.png';
 import coinImg from '../assets/QuestionCoin.png';
 import statsBg from '../assets/QuestionNumber.png';
 import descriptionImg from '../assets/description.png';
@@ -18,42 +18,25 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ status, totalQuestions, o
   const isLoading = status === 'loading';
 
   return (
-    <div className="welcome-screen-new">
-      {/* ── Top Bar ────────────────────────────────────────────── */}
-      <div className="welcome-top-bar">
-        {/* Left Side: Stats */}
-        <div className="welcome-stats" style={{ backgroundImage: `url(${statsBg})` }}>
-          <div className="welcome-stats-bg">
-            <img src={daddcoinImg} alt="DaddCoin" className="welcome-icon" />
-            <span className="welcome-text">{isLoading ? '...' : totalQuestions}</span>
-            <span className="welcome-separator">=</span>
-            <img src={coinImg} alt="Coin" className="welcome-icon" />
-            <span className="welcome-text">{isLoading ? '...' : totalQuestions}</span>
-          </div>
-        </div>
-
-      </div>
-
-      {/* ── Body ──────────────────────────────────────────────── */}
-      <div className="welcome-body">
-        <img src={descriptionImg} alt="How to play" className="welcome-description" />
-      </div>
-
-      {/* ── Footer ────────────────────────────────────────────── */}
-      <div className="welcome-footer">
-        <button className="welcome-exit-btn" onClick={() => window.location.href = '/'} aria-label="خروج">
-          <img src={exitBtnImg} alt="خروج" />
-        </button>
-        <button
-          className={`welcome-start-btn ${isLoading ? 'loading' : ''}`}
-          style={{ backgroundImage: `url(${startBtnBg})` }}
-          onClick={onStart}
-          disabled={isLoading}
-        >
-          {isLoading ? 'تحميل' : 'ابدَأ!'}
-        </button>
-      </div>
-    </div>
+    <GameWelcomeScreen
+      backgroundImage={BG}
+      statsBgImage={statsBg}
+      statLeftIcon={daddcoinImg}
+      statLeftAlt="النقاط"
+      statLeftValue={totalQuestions}
+      statRightValue={totalQuestions}
+      statRightIcon={coinImg}
+      statRightAlt="العملات"
+      heroImage={descriptionImg}
+      heroAlt="كيف ألعب؟"
+      startButtonImage={startBtnBg}
+      exitButtonImage={exitBtnImg}
+      startLabel={isLoading ? 'تحميل' : 'ابدَأ!'}
+      onStart={onStart}
+      onExit={() => { window.location.href = '/'; }}
+      isLoading={isLoading}
+      isReady={!isLoading && totalQuestions > 0}
+    />
   );
 };
 
