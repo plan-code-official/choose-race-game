@@ -6,7 +6,7 @@ import statsBg from '../assets/QuestionNumber.png';
 import descriptionImg from '../assets/description.png';
 import startBtnBg from '../assets/startButton.png';
 import daddcoinImg from '../assets/daddcoin.webp';
-import exitBtnImg from '../assets/ExitButton.svg';
+import exitBtnImg from '../assets/Exit1.png';
 
 interface WelcomeScreenProps {
   status: 'loading' | 'welcome';
@@ -33,10 +33,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ status, totalQuestions, o
           </div>
         </div>
 
-        {/* Right Side: Exit Button */}
-        <button className="welcome-exit-btn" onClick={() => window.location.href = '/'}>
-          <img src={exitBtnImg} alt="Exit Game" />
-        </button>
       </div>
 
       {/* ── Body ──────────────────────────────────────────────── */}
@@ -46,6 +42,9 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ status, totalQuestions, o
 
       {/* ── Footer ────────────────────────────────────────────── */}
       <div className="welcome-footer">
+        <button className="welcome-exit-btn" onClick={() => window.location.href = '/'} aria-label="خروج">
+          <img src={exitBtnImg} alt="خروج" />
+        </button>
         <button
           className={`welcome-start-btn ${isLoading ? 'loading' : ''}`}
           style={{ backgroundImage: `url(${startBtnBg})` }}
