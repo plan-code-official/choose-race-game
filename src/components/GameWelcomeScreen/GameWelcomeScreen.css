@@ -1,211 +1,178 @@
-/* ══════════════════════════════════════════════════════════════
-   GameWelcomeScreen.css
-   Prefix: .gws-  (Game Welcome Screen)
-   All layout & style for the reusable welcome/lobby screen.
-   ══════════════════════════════════════════════════════════════ */
-
-/* ── Root ─────────────────────────────────────────────────────── */
 .gws-screen {
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
-  min-height: 0;
-  direction: rtl;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  z-index: 5000;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: clamp(8px, 1.8vh, 22px) clamp(10px, 2vw, 28px);
+  /* Match the results screen rhythm between the main visual and CTAs. */
+  gap: clamp(8px, 2dvh, 22px);
+  width: 100%;
+  height: 100dvh;
+  padding: max(8px, env(safe-area-inset-top)) clamp(10px, 3vw, 40px) max(8px, env(safe-area-inset-bottom));
   overflow: hidden;
-  z-index: 9999;
-  font-family: 'Fredoka One', cursive, sans-serif;
+  background-color: #0a0d1a;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(255, 0, 127, 0.08) 0%, transparent 40%);
+  background-position: center;
+  background-size: cover;
+  font-family: Lateef, var(--font-arabic, sans-serif);
+  direction: rtl;
 }
 
-.gws-screen::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(8, 23, 29, 0.35);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* ── Header ───────────────────────────────────────────────────── */
+/* Three regions only: score header, centered description art, and CTA footer. */
 .gws-header {
   position: relative;
-  inset: auto;
-  width: 100%;
-  height: auto;
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  direction: ltr;
-  z-index: 10;
+  flex: 0 0 auto;
+  align-self: flex-start;
+  /* Physical margins keep this pill at the left even while the screen is RTL. */
+  margin-right: auto;
+  margin-left: 0;
+  width: clamp(160px, 18vw, 250px);
+  z-index: 1;
 }
 
 .gws-stats-bg {
-  background-size: 100% 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 397 / 137;
+  padding: 5% 9%;
+  gap: 5px;
   background-position: center;
   background-repeat: no-repeat;
-  padding: 4px clamp(12px, 2vw, 25px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: fit-content;
-  min-width: min(210px, 100%);
-  max-width: 100%;
-  height: clamp(42px, 7vh, 60px);
-  flex: 0 0 auto;
-}
-
-.gws-stats-inner {
+  background-size: 100% 100%;
   direction: ltr;
-  display: flex;
-  align-items: center;
-  gap: clamp(6px, 1.2vw, 15px);
-  color: #fff;
-  font-size: 22px;
-  font-weight: bold;
 }
 
-.gws-stat-icon { display: block; width: clamp(22px, 4.5vh, 35px); height: clamp(22px, 4.5vh, 35px); flex: 0 0 auto; object-fit: contain; }
-.gws-stat-value { color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,.5); font-size: clamp(16px, 3vh, 22px); }
-.gws-stat-value--highlight { color: #f9d00f; text-shadow: 0 2px 4px rgba(0,0,0,.5); font-size: clamp(16px, 3vh, 22px); }
-.gws-stat-separator { color: #94a3b8; font-size: 1.2rem; }
+.gws-stat-icon {
+  flex: 0 0 auto;
+  width: clamp(18px, 2vw, 29px);
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+}
 
-/* ── Body ─────────────────────────────────────────────────────── */
-.gws-body {
-  position: relative;
-  flex: 1 1 auto;
-  min-height: 0;
+.gws-stat-text,
+.gws-stat-equals {
+  flex: 0 1 auto;
+  color: #fff;
+  font-size: clamp(18px, 1.8vw, 26px);
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.gws-stat-text--yellow { color: #ffe500; }
+
+.gws-main-footer {
   display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: clamp(8px, 2dvh, 22px);
   width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: clamp(4px, 1.5vh, 16px);
+  min-height: 0;
+}
+
+.gws-body {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  width: 100%;
+  min-height: 0;
+  min-width: 0;
   overflow: hidden;
-  z-index: 1;
 }
 
-.gws-hero-img {
+.gws-description-art {
   display: block;
-  width: min(92%, 900px, 82dvh);
-  max-width: 100%;
-  max-height: 100%;
+  flex: 0 1 auto;
+  width: auto;
+  height: auto;
+  max-width: min(90vw, 800px);
+  max-height: min(55dvh, 500px, 100%);
   object-fit: contain;
-  filter: drop-shadow(0 15px 25px rgba(0,0,0,0.4));
-  transform: none;
-  transition: transform .3s cubic-bezier(.175,.885,.32,1.275), filter .3s ease;
-}
-.gws-hero-img:hover { 
-  transform: scale(1.02) translateY(-5px); 
-  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.5));
+  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, .42));
 }
 
-/* ── Footer ───────────────────────────────────────────────────── */
 .gws-footer {
-  position: relative; 
-  margin: 0;
-  width: 100%;
   flex: 0 0 auto;
-  display: flex; 
-  justify-content: center; 
-  z-index: 1;
+  align-self: center;
+  width: min(100%, clamp(280px, 38vw, 720px));
+  padding-bottom: max(0px, env(safe-area-inset-bottom));
 }
+
 .gws-footer-buttons {
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  flex-wrap: nowrap;
-  width: min(100%, 620px);
-  gap: clamp(8px, 3vw, 28px);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: center;
+  gap: clamp(8px, 2vw, 20px);
+  width: 100%;
+}
+
+.gws-img-btn,
+.gws-start-btn {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 565 / 231;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+  cursor: pointer;
+  transition: transform .18s ease, filter .18s ease;
 }
 
 .gws-start-btn {
-  background-color: transparent;
-  background-size: 100% 100%; background-position: center; background-repeat: no-repeat;
-  border: none; cursor: pointer;
-  color: #fff; font-family: 'Fredoka One', cursive, sans-serif;
-  font-size: clamp(1rem, 3vw, 2rem); text-shadow: 0 2px 4px rgba(0,0,0,.5);
-  width: clamp(112px, 24vw, 260px);
-  min-width: 0;
-  height: auto;
-  aspect-ratio: 565 / 231;
-  flex: 1 1 0;
-  display: flex; align-items: center; justify-content: center;
-  padding: 0 6px;
-  transition: transform .2s cubic-bezier(.175,.885,.32,1.275), filter .2s ease;
-}
-.gws-start-btn:hover:not(:disabled) { transform: scale(1.05); filter: brightness(1.1); }
-.gws-start-btn:disabled { cursor: progress; filter: grayscale(.6) brightness(.8); font-size: 1.5rem; }
-
-.gws-exit-footer-btn {
-  background: none; border: none; cursor: pointer; padding: 0;
-  display: flex; align-items: center; justify-content: center;
-  transition: transform .2s ease;
-  width: clamp(112px, 24vw, 260px);
-  min-width: 0;
-  height: auto;
-  aspect-ratio: 565 / 231;
-  flex: 1 1 0;
-}
-.gws-exit-footer-btn img { 
-  display: block;
-  width: 100%; 
-  height: 100%; 
-  object-fit: contain;
-}
-.gws-exit-footer-btn:hover { transform: scale(1.1); }
-
-/* ── Responsive ───────────────────────────────────────────────── */
-@media (max-width: 950px) {
-  .gws-footer { padding-inline: 2px; }
-  .gws-footer-buttons { gap: clamp(6px, 2vw, 16px); }
-  .gws-start-btn, .gws-exit-footer-btn {
-    width: clamp(105px, 38vw, 190px);
-    max-width: calc((100vw - 48px) / 2);
-    flex: 1 1 0;
-  }
-  .gws-hero-img { width: min(88%, 620px, 64dvh); }
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 
-@media (max-width: 900px) and (max-height: 500px) {
-  .gws-screen {
-    padding: 10px;
-    gap: 10px;
-  }
-  .gws-header { 
-    top: auto;
-    height: 40px; 
-  }
-  .gws-stats-bg { 
-    min-width: 0;
-    height: 40px; 
-  }
-  .gws-stat-value, .gws-stat-value--highlight { 
-    font-size: 14px; 
-  }
-  .gws-stats-inner {
-    font-size: 14px;
-  }
-  .gws-start-btn { 
-    width: clamp(100px, 22vw, 160px);
-    height: auto;
-    font-size: 1.2rem;
-  }
-  .gws-exit-footer-btn { 
-    width: clamp(100px, 22vw, 160px);
-    height: auto;
-  }
-  .gws-hero-img { 
-    max-width: 350px; 
-    max-height: 60vh; 
-  }
+.gws-img-btn img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.gws-img-btn:hover,
+.gws-start-btn:hover:not(:disabled) { transform: translateY(-2px) scale(1.025); filter: brightness(1.12); }
+.gws-img-btn:active,
+.gws-start-btn:active:not(:disabled) { transform: scale(.98); }
+.gws-start-btn:disabled { cursor: progress; opacity: .65; }
+.gws-img-btn:focus-visible,
+.gws-start-btn:focus-visible { outline: 3px solid #8bf4ff; outline-offset: 3px; border-radius: 15px; }
+
+/* On phones, use the flexible center zone's spare space above the art so the
+   image and fixed-size footer remain visually close without shrinking either. */
+@media (max-width: 599px) {
+  .gws-screen { gap: clamp(6px, 1.2dvh, 12px); }
+  .gws-main-footer { gap: clamp(6px, 1.2dvh, 12px); }
+}
+
+/* Short landscape phones: preserve the no-scroll page and, only if needed,
+   allow the center art area—not the document—to become the safety valve. */
+@media (max-height: 500px) {
+  .gws-screen { gap: 5px; }
+  .gws-main-footer { gap: 5px; }
+  .gws-header { width: clamp(142px, 23vw, 190px); }
+  .gws-stat-text,
+  .gws-stat-equals { font-size: clamp(14px, 2.8vw, 18px); }
+  .gws-stat-icon { width: clamp(15px, 3vw, 21px); }
+  .gws-footer { width: min(100%, clamp(230px, 45vw, 440px)); }
+  .gws-body { overflow-y: auto; overflow-x: hidden; }
+  .gws-description-art { max-height: min(48dvh, 360px, 100%); }
+}
+
+/* From 260px-wide mobile screens upward, close the footer to the hero art.
+   The negative margin only tightens the visual gap; it does not change the
+   flex sizing of the center zone or enable page scrolling. */
+@media (min-width: 260px) and (max-width: 599px) {
+  .gws-screen { gap: clamp(6px, 1.2dvh, 12px); }
+  .gws-main-footer { gap: clamp(6px, 1.2dvh, 12px); }
 }

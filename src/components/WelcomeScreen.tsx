@@ -27,11 +27,9 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ status, totalQuestions, o
       statRightValue={totalQuestions}
       statRightIcon={coinImg}
       statRightAlt="العملات"
-      heroImage={descriptionImg}
-      heroAlt="كيف ألعب؟"
+      descriptionImage={descriptionImg}
       startButtonImage={startBtnBg}
       exitButtonImage={exitBtnImg}
-      startLabel={isLoading ? 'تحميل' : 'ابدَأ!'}
       onStart={onStart}
       onExit={() => { window.location.href = '/'; }}
       isLoading={isLoading}

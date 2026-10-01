@@ -2,117 +2,91 @@ import React from 'react';
 import './GameWelcomeScreen.css';
 
 interface GameWelcomeScreenProps {
-  /** Full-screen background image */
-  backgroundImage: string;
-  /** Badge frame background image (e.g. QuestionNumber.png) */
+  backgroundImage?: string;
   statsBgImage: string;
-  /** Left icon inside the badge (e.g. question coin) */
-  statLeftIcon: string;
+  statLeftIcon?: string;
   statLeftAlt?: string;
-  /** Primary count shown in white (e.g. number of questions) */
-  statLeftValue: number;
-  /** Derived/highlighted count shown in yellow */
-  statRightValue: number;
-  /** Right icon inside the badge (e.g. reward coin) */
-  statRightIcon: string;
+  statLeftValue?: string | number;
+  statRightValue?: string | number;
+  statRightIcon?: string;
   statRightAlt?: string;
-  /** Main description / how-to-play image */
-  heroImage: string;
-  heroAlt?: string;
-  /** Start button graphic (used as CSS background-image) */
+  descriptionImage: string;
   startButtonImage: string;
-  /** Exit button graphic (used as <img>) */
   exitButtonImage: string;
-  /** Called when the Start button is clicked */
   onStart: () => void;
-  /** Optional label shown over the start graphic */
-  startLabel?: string;
-  /** Called when the Exit button is clicked; defaults to window.history.back() */
   onExit?: () => void;
-  /** Disables start button while data is loading */
   isLoading?: boolean;
-  /** Disables start button when no data is ready */
   isReady?: boolean;
 }
 
-const GameWelcomeScreen: React.FC<GameWelcomeScreenProps> = ({
+export default function GameWelcomeScreen({
   backgroundImage,
   statsBgImage,
   statLeftIcon,
-  statLeftAlt = '',
+  statLeftAlt = 'عدد الأسئلة',
   statLeftValue,
   statRightValue,
   statRightIcon,
-  statRightAlt = '',
-  heroImage,
-  heroAlt = '',
+  statRightAlt = 'النقاط',
+  descriptionImage,
   startButtonImage,
   exitButtonImage,
   onStart,
-  startLabel = '',
   onExit,
   isLoading = false,
   isReady = true,
-}) => {
-  const disabled = isLoading || !isReady;
-
-  const handleExit = () => {
-    if (onExit) {
-      onExit();
-    } else {
+}: GameWelcomeScreenProps) {
+  const handleExit = onExit || (() => {
+    if (window.history.length > 1) {
       window.history.back();
+    } else {
+      window.location.href = '/';
     }
-  };
+  });
+
+  const startDisabled = isLoading || !isReady;
 
   return (
     <div
       className="gws-screen"
-      style={{ backgroundImage: `url(${backgroundImage})` }}
+      dir="rtl"
+      style={backgroundImage ? { backgroundImage: `url(${backgroundImage})` } : undefined}
     >
-      {/* ── Header: Stats Badge ──────────────────────────── */}
-      <header className="gws-header">
-        <div
-          className="gws-stats-bg"
-          style={{ backgroundImage: `url(${statsBgImage})` }}
-        >
-          <div className="gws-stats-inner">
-            <img src={statLeftIcon} alt={statLeftAlt} className="gws-stat-icon" />
-            <span className="gws-stat-value">
-              {isLoading ? '...' : statLeftValue}
-            </span>
-            <span className="gws-stat-separator">=</span>
-            <img src={statRightIcon} alt={statRightAlt} className="gws-stat-icon" />
-            <span className="gws-stat-value--highlight">
-              {isLoading ? '...' : statRightValue}
-            </span>
-          </div>
+      <header className="gws-header" aria-label="إحصاءات اللعبة">
+        <div className="gws-stats-bg" style={{ backgroundImage: `url(${statsBgImage})` }}>
+          {statLeftIcon && <img src={statLeftIcon} alt={statLeftAlt} className="gws-stat-icon" />}
+          {statLeftValue !== undefined && <span className="gws-stat-text">{statLeftValue}</span>}
+          {statRightValue !== undefined && (
+            <>
+              <span className="gws-stat-equals" aria-hidden="true">=</span>
+              <span className="gws-stat-text gws-stat-text--yellow">{statRightValue}</span>
+            </>
+          )}
+          {statRightIcon && <img src={statRightIcon} alt={statRightAlt} className="gws-stat-icon" />}
         </div>
       </header>
 
-      {/* ── Body: Hero Image ────────────────────────────────────── */}
-      <main className="gws-body">
-        <img src={heroImage} alt={heroAlt} className="gws-hero-img" />
-      </main>
+      <div className="gws-main-footer">
+        <main className="gws-body">
+          <img className="gws-description-art" src={descriptionImage} alt="شرح طريقة اللعب" />
+        </main>
 
-      {/* ── Footer: Action Buttons ───────────────────────────────── */}
-      <footer className="gws-footer">
-        <div className="gws-footer-buttons">
-          <button className="gws-exit-footer-btn" onClick={handleExit} aria-label="Exit">
-            <img src={exitButtonImage} alt="Exit" />
-          </button>
-          
-          <button
-            className="gws-start-btn"
-            style={{ backgroundImage: `url(${startButtonImage})` }}
-            onClick={onStart}
-            disabled={disabled}
-          >
-            {startLabel}
-          </button>
-        </div>
-      </footer>
+        <footer className="gws-footer">
+          <div className="gws-footer-buttons">
+            <button className="gws-img-btn" type="button" onClick={handleExit} aria-label="خروج">
+              <img src={exitButtonImage} alt="" />
+            </button>
+            <button
+              className="gws-start-btn"
+              type="button"
+              style={{ backgroundImage: `url(${startButtonImage})` }}
+              onClick={onStart}
+              disabled={startDisabled}
+              aria-label={isLoading ? 'جارٍ التحميل' : 'ابدأ اللعبة'}
+            />
+          </div>
+        </footer>
+      </div>
     </div>
   );
-};
-
-export default GameWelcomeScreen;
+}
