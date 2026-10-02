@@ -19,6 +19,8 @@ function makeInitialState(): GameState {
     sessionId: null,
     error: null,
     currentQuestionIndex: 0,
+    computerQuestionIndex: 0,
+    playerFinished: false,
     questions: [],
     phase: 'player-turn',
     playerScore: 0,
@@ -65,6 +67,7 @@ function mapApiQuestion(q: ApiQuestion): Question {
 export function useGameLogic() {
   const [state, setState] = useState<GameState>(makeInitialState);
   const questionStartTime = useRef<number>(0);
+  const completionStarted = useRef(false);
 
   // Initialize from URL
   useEffect(() => {
@@ -126,24 +129,15 @@ export function useGameLogic() {
       const selectedAnswer = q.options[optionIndex].text;
 
       const pCorrect = optionIndex === q.correctIndex;
-      const cCorrect = Math.random() < 0.6; // Computer is correct ~60% of the time
-      const cIdx = cCorrect ? q.correctIndex : 1 - q.correctIndex;
-      
-      if (pCorrect || cCorrect) {
-        playCorrectSound(); // Play correct sound if at least one got it right
-      } else {
-        playWrongSound(); // Otherwise wrong sound
-      }
+      if (pCorrect) playCorrectSound();
+      else playWrongSound();
 
       setState((prev) => ({
         ...prev,
         phase: 'result',
         playerAnswerIndex: optionIndex,
         playerResult: pCorrect ? 'correct' : 'wrong',
-        computerAnswerIndex: cIdx,
-        computerResult: cCorrect ? 'correct' : 'wrong',
         playerScore: pCorrect ? prev.playerScore + 1 : prev.playerScore,
-        computerScore: cCorrect ? prev.computerScore + 1 : prev.computerScore,
         answersList: [
           ...prev.answersList,
           { questionId: q.id as number, selectedAnswer, timeTaken },
@@ -153,47 +147,46 @@ export function useGameLogic() {
     [state.phase, currentQuestion]
   );
 
-  // ── advance to next question ───────────────────────────────────────────────
-  const nextQuestion = useCallback(async () => {
-    // If it was the last question, submit and complete!
-    if (state.currentQuestionIndex + 1 >= state.questions.length) {
-      setState((prev) => ({ ...prev, status: 'loading' })); // Show loading while submitting
-      try {
-        let finalStats = null;
-        if (state.sessionId === 'demo-session') {
-          const totalQ = Math.max(1, state.questions.length);
-          const pct = Math.round((state.playerScore / totalQ) * 100);
-          finalStats = {
-            score: pct,
-            percentage: pct,
-            stars: pct >= 80 ? 3 : pct >= 50 ? 2 : pct > 0 ? 1 : 0,
-            coins: state.playerScore * 2,
-            experience: state.playerScore * 10,
-          };
-        } else {
-          await submitAnswers(state.sessionId!, state.answersList, state.token!);
-          finalStats = await completeSession(state.sessionId!, state.token!);
-        }
-        
-        // Determine overall game winner sound
-        const pWins = state.playerScore;
-        const cWins = state.computerScore;
-        if (pWins > cWins) playWinSound();
-        else if (cWins > pWins) playLoseSound();
-        
-        setState((prev) => ({ ...prev, status: 'game-over', phase: 'game-over', finalStats }));
-      } catch (err: any) {
-        setState((prev) => ({
-          ...prev,
-          status: 'error',
-          error: err.message || 'Failed to submit game results.',
-        }));
-      }
-      return;
-    }
+  // The robot races through its own question queue, independent of the player.
+  useEffect(() => {
+    if (state.status !== 'playing' || state.computerQuestionIndex >= state.questions.length) return;
 
-    // Go to next question
+    const delayMs = 2000 + Math.floor(Math.random() * 4001);
+    const timer = window.setTimeout(() => {
+      setState((prev) => {
+        if (prev.status !== 'playing' || prev.computerQuestionIndex >= prev.questions.length) return prev;
+
+        const question = prev.questions[prev.computerQuestionIndex];
+        if (!question) return prev;
+
+        const canMiss = question.options.length > 1;
+        const isCorrect = !canMiss || Math.random() < 0.6;
+        const wrongIndexes = question.options
+          .map((_, index) => index)
+          .filter((index) => index !== question.correctIndex);
+        const wrongIndex = wrongIndexes[Math.floor(Math.random() * wrongIndexes.length)];
+
+        return {
+          ...prev,
+          computerQuestionIndex: prev.computerQuestionIndex + 1,
+          computerResult: isCorrect ? 'correct' : 'wrong',
+          computerScore: isCorrect ? prev.computerScore + 1 : prev.computerScore,
+        };
+      });
+    }, delayMs);
+
+    return () => window.clearTimeout(timer);
+  }, [state.status, state.computerQuestionIndex, state.questions.length]);
+
+  // ── advance to next question ───────────────────────────────────────────────
+  const nextQuestion = useCallback(() => {
     setState((prev) => {
+      if (prev.status !== 'playing' || prev.playerFinished) return prev;
+
+      if (prev.currentQuestionIndex + 1 >= prev.questions.length) {
+        return { ...prev, playerFinished: true, phase: 'computer-turn' };
+      }
+
       const nextIndex = prev.currentQuestionIndex + 1;
       questionStartTime.current = Date.now();
       
@@ -207,7 +200,54 @@ export function useGameLogic() {
         computerResult: null,
       };
     });
+  }, []);
+
+  const completeGame = useCallback(async () => {
+    if (
+      state.status !== 'playing' ||
+      !state.playerFinished ||
+      state.computerQuestionIndex < state.questions.length ||
+      completionStarted.current
+    ) return;
+
+    completionStarted.current = true;
+    setState((prev) => prev.status === 'playing' ? { ...prev, status: 'loading' } : prev);
+
+    try {
+      let finalStats = null;
+      if (state.sessionId === 'demo-session') {
+        const totalQ = Math.max(1, state.questions.length);
+        const pct = Math.round((state.playerScore / totalQ) * 100);
+        finalStats = {
+          score: pct,
+          percentage: pct,
+          stars: pct >= 80 ? 3 : pct >= 50 ? 2 : pct > 0 ? 1 : 0,
+          coins: state.playerScore * 2,
+          experience: state.playerScore * 10,
+        };
+      } else {
+        await submitAnswers(state.sessionId!, state.answersList, state.token!);
+        finalStats = await completeSession(state.sessionId!, state.token!);
+      }
+
+      if (state.playerScore > state.computerScore) playWinSound();
+      else if (state.computerScore > state.playerScore) playLoseSound();
+
+      setState((prev) => ({ ...prev, status: 'game-over', phase: 'game-over', finalStats }));
+    } catch (err: any) {
+      setState((prev) => ({
+        ...prev,
+        status: 'error',
+        error: err.message || 'Failed to submit game results.',
+      }));
+    }
   }, [state]);
+
+  useEffect(() => {
+    if (state.status === 'playing' && state.playerFinished && state.computerQuestionIndex >= state.questions.length) {
+      void completeGame();
+    }
+  }, [state.status, state.playerFinished, state.computerQuestionIndex, state.questions.length, completeGame]);
 
   // ── auto-advance from result after RESULT_DISPLAY_SECONDS ─────────────────
   useEffect(() => {

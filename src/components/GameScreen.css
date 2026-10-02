@@ -144,6 +144,12 @@
     animation: spin 1s ease-in-out infinite;
   }
 
+  .loading-screen .spinner {
+    border-color: rgba(255, 255, 255, 0.2);
+    border-top-color: #71d9ff;
+    box-shadow: 0 0 18px rgba(113, 217, 255, 0.3);
+  }
+
   @keyframes spin {
     to {
       transform: rotate(360deg);

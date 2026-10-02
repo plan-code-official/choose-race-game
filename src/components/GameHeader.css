@@ -131,17 +131,72 @@
   transform: scale(1.1);
 }
 
-/* Progress Bar */
-.gh-progress-bar {
+/* Two opposing race lanes meet at the center of the header. */
+.gh-race-progress {
   width: 100%;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.2);
+  height: 36px;
+  display: flex;
+  direction: ltr;
+  padding: 0 10px 4px;
+  box-sizing: border-box;
 }
 
-.gh-progress-fill {
-  height: 100%;
-  background: #71D9FF;
-  transition: width 0.3s ease;
+.gh-race-lane {
+  position: relative;
+  flex: 1 1 50%;
+  min-width: 0;
+}
+
+.gh-race-lane--player {
+  border-left: 1px solid rgba(255, 255, 255, .35);
+}
+
+.gh-track-area {
+  position: absolute;
+  inset: 0 19px;
+}
+
+.gh-lane-track,
+.gh-lane-fill {
+  position: absolute;
+  top: 50%;
+  height: 6px;
+  border-radius: 999px;
+  transform: translateY(-50%);
+}
+
+.gh-lane-track {
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, .2);
+}
+
+.gh-lane-fill {
+  transition: width .45s ease;
+}
+
+.gh-lane-fill--robot {
+  left: 0;
+  background: #a976ff;
+  box-shadow: 0 0 8px rgba(169, 118, 255, .7);
+}
+
+.gh-lane-fill--player {
+  right: 0;
+  background: #71d9ff;
+  box-shadow: 0 0 8px rgba(113, 217, 255, .75);
+}
+
+.gh-racer-marker {
+  position: absolute;
+  top: 50%;
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, .65));
+  transition: left .45s ease;
+  z-index: 2;
 }
 
 /* ── Responsive Mobile (down to 280px) ──────────────────────────────── */
@@ -232,7 +287,7 @@
     width: 32px;
     height: 32px;
   }
-  
+
   .gh-score-pill {
     height: 24px;
     font-size: 0.9rem;

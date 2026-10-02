@@ -23,6 +23,7 @@ export type GameStatus = 'loading' | 'error' | 'playing' | 'game-over';
 
 export type Phase =
   | 'player-turn'       // waiting for player to answer
+  | 'computer-turn'     // player answered; waiting for the computer
   | 'result'            // showing correct answer
   | 'game-over';
 
@@ -35,6 +36,8 @@ export interface GameState {
   sessionId: string | null;
   error: string | null;
   currentQuestionIndex: number;
+  computerQuestionIndex: number;
+  playerFinished: boolean;
   questions: Question[];
   phase: Phase;
   playerScore: number;

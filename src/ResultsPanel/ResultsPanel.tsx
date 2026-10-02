@@ -5,7 +5,7 @@ import celebrationTitle from '../../ResultsPanel/ResultsPanel/assets/good.png';
 import coinsImage from '../../ResultsPanel/ResultsPanel/assets/money.png';
 import correctImage from '../../ResultsPanel/ResultsPanel/assets/right.png';
 import wrongImage from '../../ResultsPanel/ResultsPanel/assets/wrong.png';
-import exitButtonImage from '../assets/Exit.png';
+import exitButtonImage from '../assets/exit.png';
 import retryButtonImage from '../assets/retry.png';
 
 export interface ResultsPanelProps {
@@ -14,9 +14,15 @@ export interface ResultsPanelProps {
   correctAnswers: number;
   wrongAnswers: number;
   coins: number;
+  totalQuestions?: number;
   onRetry: () => void;
   onBack: () => void;
 }
+
+const numberValue = (value: number | undefined): number => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? Math.max(0, Math.round(parsed)) : 0;
+};
 
 export const ResultsPanel: React.FC<ResultsPanelProps> = ({
   score,
@@ -24,13 +30,18 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({
   correctAnswers,
   wrongAnswers,
   coins,
+  totalQuestions,
   onRetry,
   onBack,
 }) => {
-  const total = (correctAnswers + wrongAnswers) || 1;
-  const percent = correctAnswers / total;
-  const correctPercent = Math.round(percent * 100);
-  const isWinner = percent >= 0.5;
+  const reportedCorrect = numberValue(correctAnswers);
+  const reportedWrong = numberValue(wrongAnswers);
+  const earnedCoins = numberValue(coins);
+  const questionCount = numberValue(totalQuestions) || reportedCorrect + reportedWrong;
+  const correct = questionCount ? Math.min(reportedCorrect, questionCount) : reportedCorrect;
+  const wrong = questionCount ? questionCount - correct : reportedWrong;
+  const correctPercent = questionCount ? Math.round((correct / questionCount) * 100) : 0;
+  const isSuccess = questionCount > 0 && correctPercent >= 50;
 
   return (
     <div className="results-overlay">
@@ -38,10 +49,10 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({
         <div className="results-panel" style={{ '--results-panel-image': `url(${panelFrame})` } as any}>
           <img className="results-panel__frame" src={panelFrame} alt="" aria-hidden="true" />
           <div className="results-panel__content">
-            {isWinner ? (
-              <img src={celebrationTitle} alt="أحسنت" className="results-panel__title" />
+            {isSuccess ? (
+              <img className="results-panel__title" src={celebrationTitle} alt="أحسنت" />
             ) : (
-              <h1 className="results-panel__fail-title">حاول مرة أخرى!</h1>
+              <div className="results-panel__fail-title">حاول مرة أخرى!</div>
             )}
 
             <div className="results-grade" aria-label={`الدرجة ${correctPercent} من 100`}>
@@ -52,18 +63,18 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({
             <div className="results-stats">
               <div className="results-stat-card results-stat-card--correct">
                 <img src={correctImage} alt="إجابات صحيحة" />
-                  <strong>{correctAnswers}</strong>
+                <strong>{correct}</strong>
               </div>
 
               <div className="results-stat-card results-stat-card--coins">
                 <img src={coinsImage} alt="عملات مكتسبة" />
-                <strong>+{coins}</strong>
-                <span>فِلُوس</span>
+                <strong>+{earnedCoins}</strong>
+                <span>{'\u0641\u0650\u0644\u064f\u0648\u0633'}</span>
               </div>
 
               <div className="results-stat-card results-stat-card--wrong">
                 <img src={wrongImage} alt="إجابات خاطئة" />
-                  <strong>{wrongAnswers}</strong>
+                <strong>{wrong}</strong>
               </div>
             </div>
           </div>

@@ -11,6 +11,8 @@ interface GameHeaderProps {
   totalQuestions: number;
   playerScore: number;
   computerScore: number;
+  robotQuestionIndex: number;
+  playerAnsweredCurrent: boolean;
   onExit: () => void;
 }
 
@@ -19,9 +21,13 @@ const GameHeader: React.FC<GameHeaderProps> = ({
   totalQuestions, 
   playerScore, 
   computerScore,
+  robotQuestionIndex,
+  playerAnsweredCurrent,
   onExit 
 }) => {
-  const progressPercent = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+  const robotProgress = totalQuestions > 0 ? Math.min(100, (robotQuestionIndex / totalQuestions) * 100) : 0;
+  const playerCompleted = Math.min(totalQuestions, currentQuestionIndex + (playerAnsweredCurrent ? 1 : 0));
+  const playerProgress = totalQuestions > 0 ? (playerCompleted / totalQuestions) * 100 : 0;
 
   return (
     <div className="game-header-container">
@@ -61,8 +67,21 @@ const GameHeader: React.FC<GameHeaderProps> = ({
         </button>
       </div>
 
-      <div className="gh-progress-bar">
-        <div className="gh-progress-fill" style={{ width: `${progressPercent}%` }}></div>
+      <div className="gh-race-progress" aria-label="تقدم اللاعب والروبوت">
+        <div className="gh-race-lane gh-race-lane--robot" aria-label={`تقدم الروبوت ${robotQuestionIndex} من ${totalQuestions}`}>
+          <div className="gh-track-area">
+            <div className="gh-lane-track" />
+            <div className="gh-lane-fill gh-lane-fill--robot" style={{ width: `${robotProgress}%` }} />
+            <img className="gh-racer-marker" src={robotImg} alt="" style={{ left: `${robotProgress}%` }} />
+          </div>
+        </div>
+        <div className="gh-race-lane gh-race-lane--player" aria-label={`تقدم اللاعب ${playerCompleted} من ${totalQuestions}`}>
+          <div className="gh-track-area">
+            <div className="gh-lane-track" />
+            <div className="gh-lane-fill gh-lane-fill--player" style={{ width: `${playerProgress}%` }} />
+            <img className="gh-racer-marker" src={userImg} alt="" style={{ left: `${100 - playerProgress}%` }} />
+          </div>
+        </div>
       </div>
     </div>
   );

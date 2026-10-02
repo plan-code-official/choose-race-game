@@ -23,7 +23,6 @@ const GameScreen: React.FC = () => {
     playerAnswerIndex,
     computerAnswerIndex,
     playerResult,
-    computerResult,
     status,
     error,
   } = state;
@@ -86,29 +85,13 @@ const GameScreen: React.FC = () => {
     );
   }
 
-  /* ── Status message ──────────────────────────────────────────────────── */
-  let statusMsg = '👆 Choose the right answer!';
-  if (phase === 'result') {
-    if (playerResult === 'correct' && computerResult === 'correct') {
-      statusMsg = '🎉 Both answered correctly!';
-    } else if (playerResult === 'correct') {
-      statusMsg = '🎉 You got it right!';
-    } else if (computerResult === 'correct') {
-      statusMsg = '🤖 CPU answered correctly!';
-    } else {
-      statusMsg = '❌ Nobody got it right.';
-    }
+  if (status === 'loading' && state.answersList.length > 0) {
+    return (
+      <div className="game-screen loading-screen" role="status" aria-live="polite">
+        <div className="spinner" aria-hidden="true" />
+      </div>
+    );
   }
-
-  const getStatusClass = () => {
-    if (phase === 'result') {
-      if (playerResult === 'correct' && computerResult === 'correct') return 'status-player';
-      if (playerResult === 'correct') return 'status-player';
-      if (computerResult === 'correct') return 'status-computer';
-      return 'status-none';
-    }
-    return '';
-  };
 
   return (
     <div className="game-screen">
@@ -118,6 +101,8 @@ const GameScreen: React.FC = () => {
         totalQuestions={totalQuestions}
         playerScore={playerScore}
         computerScore={computerScore}
+        robotQuestionIndex={state.computerQuestionIndex}
+        playerAnsweredCurrent={playerAnswerIndex !== null}
         onExit={handleBack}
       />
 
@@ -158,6 +143,7 @@ const GameScreen: React.FC = () => {
           correctAnswers={playerScore}
           wrongAnswers={Math.max(0, totalQuestions - playerScore)}
           coins={state.finalStats?.coins ?? (playerScore * 2)}
+          totalQuestions={totalQuestions}
           onRetry={handleRetry}
           onBack={handleBack}
         />
