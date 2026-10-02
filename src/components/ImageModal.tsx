@@ -4,10 +4,11 @@ import './ImageModal.css';
 
 interface ImageModalProps {
   imageUrl: string;
+  imageAlt?: string;
   onClose: () => void;
 }
 
-const ImageModal: React.FC<ImageModalProps> = ({ imageUrl, onClose }) => {
+const ImageModal: React.FC<ImageModalProps> = ({ imageUrl, imageAlt = 'صورة مكبرة', onClose }) => {
   // Close on Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -18,12 +19,12 @@ const ImageModal: React.FC<ImageModalProps> = ({ imageUrl, onClose }) => {
   }, [onClose]);
 
   return createPortal(
-    <div className="image-modal-overlay" onClick={onClose}>
-      <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="image-modal-close" onClick={onClose}>
+    <div className="image-modal-overlay" role="presentation" onClick={onClose}>
+      <div className="image-modal-content" role="dialog" aria-modal="true" aria-label={imageAlt} onClick={(e) => e.stopPropagation()}>
+        <button className="image-modal-close" type="button" aria-label="إغلاق الصورة" onClick={onClose}>
           ✕
         </button>
-        <img src={imageUrl} alt="Zoomed view" className="image-modal-img" />
+        <img src={imageUrl} alt={imageAlt} className="image-modal-img" />
       </div>
     </div>,
     document.body

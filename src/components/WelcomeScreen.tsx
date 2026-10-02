@@ -31,7 +31,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ status, totalQuestions, o
       startButtonImage={startButton}
       exitButtonImage={exitButton}
       onStart={onStart}
-      onExit={() => { window.location.href = '/'; }}
       isLoading={isLoading}
       isReady={totalQuestions > 0}
     />

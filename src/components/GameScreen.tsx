@@ -7,10 +7,11 @@ import Celebration from '../Celebration/Celebration';
 import ResultsPanel from '../ResultsPanel/ResultsPanel';
 import ResultModal from './ResultModal';
 import WelcomeScreen from './WelcomeScreen';
+import { handleExitSite } from '../utils/navigation';
 import './GameScreen.css';
 
 const GameScreen: React.FC = () => {
-  const { state, currentQuestion, totalQuestions, startGame, playerAnswer, restart } = useGameLogic();
+  const { state, currentQuestion, totalQuestions, startGame, playerAnswer, returnToWelcome } = useGameLogic();
 
   const [showCelebration, setShowCelebration] = useState(false);
   const [showResults, setShowResults] = useState(false);
@@ -48,16 +49,10 @@ const GameScreen: React.FC = () => {
   const handleRetry = () => {
     setShowResults(false);
     setShowCelebration(false);
-    restart();
+    void returnToWelcome();
   };
 
-  const handleBack = () => {
-    console.log('Go to menu');
-    window.parent.postMessage('GAME_COMPLETED', '*');
-    if (window.history.length > 1) {
-      window.history.back();
-    }
-  };
+  const handleBack = handleExitSite;
 
   const showResult = phase === 'result';
 
@@ -79,7 +74,7 @@ const GameScreen: React.FC = () => {
         <h2>Oops! Something went wrong.</h2>
         <p>{error}</p>
         <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-          <button onClick={restart} className="restart-btn">Try Again</button>
+          <button onClick={() => void returnToWelcome()} className="restart-btn">Try Again</button>
         </div>
       </div>
     );

@@ -256,11 +256,55 @@ export function useGameLogic() {
     return () => clearTimeout(t);
   }, [state.phase, nextQuestion]);
 
-  // ── restart game ───────────────────────────────────────────────────────────
-  const restart = useCallback(() => {
-    // Usually games redirect or reload, but we can just reload the page to restart the flow
-    window.location.reload();
-  }, []);
+  // Return to the welcome screen with a fresh server session for another run.
+  const returnToWelcome = useCallback(async () => {
+    completionStarted.current = false;
+
+    setState((prev) => ({
+      ...prev,
+      status: 'loading',
+      error: null,
+      currentQuestionIndex: 0,
+      computerQuestionIndex: 0,
+      playerFinished: false,
+      phase: 'player-turn',
+      playerScore: 0,
+      computerScore: 0,
+      playerAnswerIndex: null,
+      computerAnswerIndex: null,
+      playerResult: null,
+      computerResult: null,
+      answersList: [],
+      finalStats: null,
+    }));
+
+    questionStartTime.current = 0;
+
+    if (state.sessionId === 'demo-session') {
+      setState((prev) => ({ ...prev, status: 'welcome', sessionId: 'demo-session' }));
+      return;
+    }
+
+    if (!state.lessonId || !state.token) {
+      setState((prev) => ({
+        ...prev,
+        status: 'error',
+        error: 'Missing lessonId or token in URL parameters.',
+      }));
+      return;
+    }
+
+    try {
+      const sessionId = await startGameSession(state.lessonId, state.token);
+      setState((prev) => ({ ...prev, status: 'welcome', sessionId }));
+    } catch (err: any) {
+      setState((prev) => ({
+        ...prev,
+        status: 'error',
+        error: err.message || 'Failed to start a new game session.',
+      }));
+    }
+  }, [state.lessonId, state.sessionId, state.token]);
 
   const loadDemoMode = useCallback(() => {
     const demoQuestions = getShuffledQuestions().slice(0, 4);
@@ -280,7 +324,7 @@ export function useGameLogic() {
     startGame,
     playerAnswer,
     nextQuestion,
-    restart,
+    returnToWelcome,
     loadDemoMode,
   };
 }
