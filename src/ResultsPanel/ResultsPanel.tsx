@@ -5,7 +5,7 @@ import celebrationTitle from '../../ResultsPanel/ResultsPanel/assets/good.png';
 import coinsImage from '../../ResultsPanel/ResultsPanel/assets/money.png';
 import correctImage from '../../ResultsPanel/ResultsPanel/assets/right.png';
 import wrongImage from '../../ResultsPanel/ResultsPanel/assets/wrong.png';
-import exitButtonImage from '../assets/exit.png';
+import exitButtonImage from '../assets/Exit.png';
 import retryButtonImage from '../assets/retry.png';
 
 export interface ResultsPanelProps {
@@ -60,7 +60,7 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({
               <strong>{correctPercent}/100</strong>
             </div>
 
-            <div className="results-stats">
+            <div className="results-stats" aria-label="إحصاءات الأداء">
               <div className="results-stat-card results-stat-card--correct">
                 <img src={correctImage} alt="إجابات صحيحة" />
                 <strong>{correct}</strong>
@@ -80,12 +80,12 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({
           </div>
         </div>
 
-        <div className="results-actions">
-          <button className="results-action results-action--exit" type="button" onClick={onBack}>
+        <div className="results-actions" aria-label="إجراءات النتائج">
+          <button className="results-action results-action--exit" type="button" onClick={onBack} aria-label="خروج">
             <img className="results-action__bg" src={exitButtonImage} alt="خروج" />
           </button>
 
-          <button className="results-action results-action--retry" type="button" onClick={onRetry}>
+          <button className="results-action results-action--retry" type="button" onClick={onRetry} aria-label="إعادة المحاولة">
             <img className="results-action__bg" src={retryButtonImage} alt="إعادة المحاولة" />
           </button>
         </div>

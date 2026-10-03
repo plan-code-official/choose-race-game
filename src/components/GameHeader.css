@@ -264,15 +264,21 @@
 
 @media (max-width: 380px) {
   .game-header-content {
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-wrap: nowrap;
+    justify-content: space-between;
   }
   
   .gh-exit-btn {
-    width: 100%;
-    margin-top: 15px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    flex: 0 0 30px;
+    width: 30px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .gh-exit-btn img {
+    width: 28px;
+    height: 28px;
   }
   
   .gh-spacer {
@@ -280,7 +286,10 @@
   }
 
   .gh-middle-group {
-    gap: 6px;
+    flex: 1 1 auto;
+    min-width: 0;
+    justify-content: space-between;
+    gap: 4px;
   }
   
   .gh-avatar {
