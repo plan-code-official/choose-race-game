@@ -75,11 +75,11 @@ export function useGameLogic() {
     const lessonId = searchParams.get('lessonId');
     const token = searchParams.get('token');
 
-    if (!lessonId || !token) {
+    if (!lessonId) {
       setState((prev) => ({
         ...prev,
         status: 'error',
-        error: 'Missing lessonId or token in URL parameters.',
+        error: 'Missing lessonId in URL parameters.',
       }));
       return;
     }
@@ -88,10 +88,10 @@ export function useGameLogic() {
 
     async function initGame() {
       try {
-        const apiQuestions = await fetchQuestions(lessonId!, token!);
+        const apiQuestions = await fetchQuestions(lessonId, token || '');
         const questions = apiQuestions.map(mapApiQuestion);
         
-        const sessionId = await startGameSession(lessonId!, token!);
+        const sessionId = await startGameSession(lessonId, token || '');
         
         setState((prev) => ({
           ...prev,
