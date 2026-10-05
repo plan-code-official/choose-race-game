@@ -1,6 +1,4 @@
-import React from 'react';
 import './GameWelcomeScreen.css';
-import { handleExitSite } from '../../utils/navigation';
 
 interface GameWelcomeScreenProps {
   backgroundImage?: string;
@@ -15,6 +13,7 @@ interface GameWelcomeScreenProps {
   startButtonImage: string;
   exitButtonImage: string;
   onStart: () => void;
+  onExit?: () => void;
   isLoading?: boolean;
   isReady?: boolean;
 }
@@ -32,16 +31,21 @@ export default function GameWelcomeScreen({
   startButtonImage,
   exitButtonImage,
   onStart,
+  onExit,
   isLoading = false,
   isReady = true,
 }: GameWelcomeScreenProps) {
   const startDisabled = isLoading || !isReady;
 
-  const handleArtLoad = (event: React.SyntheticEvent<HTMLImageElement>) => {
-    const image = event.currentTarget;
-    const stage = image.closest<HTMLElement>('.gws-stage');
-    if (stage && image.naturalWidth && image.naturalHeight) {
-      stage.style.setProperty('--gws-art-ratio', String(image.naturalWidth / image.naturalHeight));
+
+
+  const handleExit = () => {
+    if (onExit) {
+      onExit();
+    } else if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = '/';
     }
   };
 
@@ -72,13 +76,12 @@ export default function GameWelcomeScreen({
               className="gws-description-art"
               src={descriptionImage}
               alt="شرح طريقة اللعب"
-              onLoad={handleArtLoad}
             />
           </div>
 
           <footer className="gws-footer">
             <div className="gws-footer-buttons">
-              <button className="gws-img-btn" type="button" onClick={handleExitSite} aria-label="خروج">
+              <button className="gws-img-btn" type="button" onClick={handleExit} aria-label="خروج">
                 <img src={exitButtonImage} alt="" />
               </button>
               <button

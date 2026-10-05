@@ -12,10 +12,9 @@
   box-sizing: border-box;
   padding: max(8px, env(safe-area-inset-top)) clamp(10px, 3vw, 40px) max(8px, env(safe-area-inset-bottom));
   overflow: hidden;
-  background-color: #0a0d1a;
-  background-image:
-    radial-gradient(circle at 10% 20%, rgba(99, 102, 241, .1) 0%, transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(255, 0, 127, .08) 0%, transparent 40%);
+  /* Preserve Arabic Matching's existing page background. */
+  background-color: #08171d;
+  background-image: radial-gradient(circle at center, #113645, #08171d);
   background-position: center;
   background-size: cover;
   font-family: Lateef, var(--font-arabic, sans-serif);
@@ -124,7 +123,8 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: center;
   gap: clamp(8px, 2vw, 20px);
-  width: 100%;
+  width: calc(min(calc(100% * var(--gws-art-scale)), calc(100vw - 20px)) * 0.85);
+  margin: 0 auto;
 }
 
 .gws-img-btn,
