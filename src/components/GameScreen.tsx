@@ -7,14 +7,21 @@ import Celebration from '../Celebration/Celebration';
 import ResultsPanel from '../ResultsPanel/ResultsPanel';
 import ResultModal from './ResultModal';
 import WelcomeScreen from './WelcomeScreen';
+import ErrorScreen from './ErrorScreen';
 import { handleExitSite } from '../utils/navigation';
+import { preloadAllCoreAssets } from '../utils/preloadAssets';
 import './GameScreen.css';
 
 const GameScreen: React.FC = () => {
-  const { state, currentQuestion, totalQuestions, startGame, playerAnswer, returnToWelcome } = useGameLogic();
+  const { state, userProfile, currentQuestion, totalQuestions, startGame, playerAnswer, returnToWelcome } = useGameLogic();
 
   const [showCelebration, setShowCelebration] = useState(false);
   const [showResults, setShowResults] = useState(false);
+
+  // Preload all core assets on initial mount
+  useEffect(() => {
+    void preloadAllCoreAssets();
+  }, []);
 
   const {
     phase,
@@ -68,15 +75,16 @@ const GameScreen: React.FC = () => {
     );
   }
 
-  if (status === 'error') {
+  if (status === 'error' || (!isInitialLoading && status !== 'loading' && totalQuestions === 0)) {
     return (
-      <div className="game-screen error-screen">
-        <h2>Oops! Something went wrong.</h2>
-        <p>{error}</p>
-        <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-          <button onClick={() => void returnToWelcome()} className="restart-btn">Try Again</button>
-        </div>
-      </div>
+      <ErrorScreen
+        onExit={handleBack}
+        description={
+          error?.toLowerCase().includes('lessonid')
+            ? 'لا يمكننا العثور على الدرس المطلوب. يرجى التأكد من الرابط أو العودة للرئيسية.'
+            : (error || 'لا يمكننا العثور على هذه الصفحة. دعنا نذهب إلى مكان مألوف.')
+        }
+      />
     );
   }
 
@@ -96,9 +104,9 @@ const GameScreen: React.FC = () => {
         totalQuestions={totalQuestions}
         playerScore={playerScore}
         computerScore={computerScore}
-        robotQuestionIndex={state.computerQuestionIndex}
-        playerAnsweredCurrent={playerAnswerIndex !== null}
         onExit={handleBack}
+        playerAvatar={userProfile?.avatarUrl}
+        playerAccessory={userProfile?.accessoryUrl}
       />
 
       {/* ── Main arena ───────────────────────────────────────────────────── */}
@@ -146,7 +154,7 @@ const GameScreen: React.FC = () => {
 
       {/* ── Result Modal overlay ───────────────────────────────────────────── */}
       {phase === 'result' && playerResult && (
-        <ResultModal isCorrect={playerResult === 'correct'} />
+        <ResultModal resultType={playerResult} />
       )}
     </div>
   );

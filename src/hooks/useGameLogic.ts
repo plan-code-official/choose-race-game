@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { GameState, Phase, AnswerResult, Question } from '../types';
-import { fetchQuestions, startGameSession, submitAnswers, completeSession, ApiQuestion } from '../services/api';
+import { GameState, Question } from '../types';
+import { fetchQuestions, startGameSession, submitAnswers, completeSession, ApiQuestion, fetchUserProfile, subscribeUserProfile, getUserProfile, UserProfile } from '../services/api';
 import { getShuffledQuestions } from '../data/questions';
 import {
   playCorrectSound,
@@ -8,8 +8,7 @@ import {
   playWinSound,
   playLoseSound,
 } from '../utils/tts';
-
-const RESULT_DISPLAY_SECONDS = 3;
+import { preloadQuestionAssets } from '../utils/preloadAssets';
 
 function makeInitialState(): GameState {
   return {
@@ -31,6 +30,7 @@ function makeInitialState(): GameState {
     computerResult: null,
     answersList: [],
     finalStats: null,
+    userProfile: null,
   };
 }
 
@@ -57,8 +57,8 @@ function mapApiQuestion(q: ApiQuestion): Question {
     imageEmoji: '❓',
     imageAlt: q.question,
     options,
-    correctIndex: correctIndex >= 0 ? correctIndex : 0, // Fallback if correct answer not in options (shouldn't happen)
-    audioText: q.audioUrl || q.question, // Just fallback to question text for audio
+    correctIndex: correctIndex >= 0 ? correctIndex : 0,
+    audioText: q.audioUrl || q.question,
     apiAudioUrl: q.audioUrl || q.options?.find((option) => option.audioUrl)?.audioUrl || null,
     category: 'api',
   };
@@ -66,8 +66,19 @@ function mapApiQuestion(q: ApiQuestion): Question {
 
 export function useGameLogic() {
   const [state, setState] = useState<GameState>(makeInitialState);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(() => getUserProfile());
   const questionStartTime = useRef<number>(0);
   const completionStarted = useRef(false);
+  const robotTimerRef = useRef<number | null>(null);
+
+  // Subscribe to user profile updates
+  useEffect(() => {
+    const unsubscribe = subscribeUserProfile((profile) => {
+      setUserProfile(profile);
+      setState((prev) => ({ ...prev, userProfile: profile }));
+    });
+    return unsubscribe;
+  }, []);
 
   // Initialize from URL
   useEffect(() => {
@@ -88,7 +99,12 @@ export function useGameLogic() {
 
     async function initGame() {
       try {
+        void fetchUserProfile(token || undefined);
         const apiQuestions = await fetchQuestions(lessonId, token || '');
+        if (!apiQuestions || apiQuestions.length === 0) {
+          throw new Error('لم يتم العثور على أي أسئلة لهذا الدرس.');
+        }
+        preloadQuestionAssets(apiQuestions);
         const questions = apiQuestions.map(mapApiQuestion);
         
         const sessionId = await startGameSession(lessonId, token || '');
@@ -115,16 +131,74 @@ export function useGameLogic() {
   const totalQuestions = state.questions.length;
 
   const startGame = useCallback(() => {
-    setState((prev) => ({ ...prev, status: 'playing' }));
+    setState((prev) => ({ ...prev, status: 'playing', phase: 'player-turn' }));
     questionStartTime.current = Date.now();
   }, []);
 
-  // ── player answers ─────────────────────────────────────────────────────────
+  // ── Hakim (Robot) answers first when timer fires ───────────────────────────
+  const handleHakimAnswer = useCallback(() => {
+    setState((prev) => {
+      if (prev.status !== 'playing' || prev.phase !== 'player-turn') return prev;
+      const q = prev.questions[prev.currentQuestionIndex];
+      if (!q) return prev;
+
+      const timeTaken = Math.floor((Date.now() - questionStartTime.current) / 1000);
+      playWrongSound();
+
+      return {
+        ...prev,
+        phase: 'result',
+        computerAnswerIndex: q.correctIndex,
+        playerAnswerIndex: null,
+        playerResult: 'hakim-faster',
+        computerScore: prev.computerScore + 1,
+        computerQuestionIndex: prev.currentQuestionIndex,
+        answersList: [
+          ...prev.answersList,
+          { questionId: q.id as number, selectedAnswer: 'N/A', timeTaken },
+        ],
+      };
+    });
+  }, []);
+
+  // ── Robot race timer per question (between 3 and 8 seconds) ───────────────
+  useEffect(() => {
+    if (state.status !== 'playing' || state.phase !== 'player-turn' || !currentQuestion) {
+      if (robotTimerRef.current) {
+        window.clearTimeout(robotTimerRef.current);
+        robotTimerRef.current = null;
+      }
+      return;
+    }
+
+    // Randomized duration between 3.0s and 8.0s
+    const robotDurationMs = 3000 + Math.random() * 5000;
+
+    robotTimerRef.current = window.setTimeout(() => {
+      robotTimerRef.current = null;
+      handleHakimAnswer();
+    }, robotDurationMs);
+
+    return () => {
+      if (robotTimerRef.current) {
+        window.clearTimeout(robotTimerRef.current);
+        robotTimerRef.current = null;
+      }
+    };
+  }, [state.status, state.phase, state.currentQuestionIndex, currentQuestion, handleHakimAnswer]);
+
+  // ── Player answers ────────────────────────────────────────────────────────
   const playerAnswer = useCallback(
     (optionIndex: number) => {
       if (state.phase !== 'player-turn' || !currentQuestion) return;
+
+      // Player answered before robot -> cancel robot timer immediately!
+      if (robotTimerRef.current) {
+        window.clearTimeout(robotTimerRef.current);
+        robotTimerRef.current = null;
+      }
+
       const q = currentQuestion;
-      
       const timeTaken = Math.floor((Date.now() - questionStartTime.current) / 1000);
       const selectedAnswer = q.options[optionIndex].text;
 
@@ -136,7 +210,9 @@ export function useGameLogic() {
         ...prev,
         phase: 'result',
         playerAnswerIndex: optionIndex,
+        computerAnswerIndex: null,
         playerResult: pCorrect ? 'correct' : 'wrong',
+        // User gets point if right; 0 points/coins if wrong
         playerScore: pCorrect ? prev.playerScore + 1 : prev.playerScore,
         answersList: [
           ...prev.answersList,
@@ -147,52 +223,26 @@ export function useGameLogic() {
     [state.phase, currentQuestion]
   );
 
-  // The robot races through its own question queue, independent of the player.
-  useEffect(() => {
-    if (state.status !== 'playing' || state.computerQuestionIndex >= state.questions.length) return;
-
-    const delayMs = 2000 + Math.floor(Math.random() * 4001);
-    const timer = window.setTimeout(() => {
-      setState((prev) => {
-        if (prev.status !== 'playing' || prev.computerQuestionIndex >= prev.questions.length) return prev;
-
-        const question = prev.questions[prev.computerQuestionIndex];
-        if (!question) return prev;
-
-        const canMiss = question.options.length > 1;
-        const isCorrect = !canMiss || Math.random() < 0.6;
-        const wrongIndexes = question.options
-          .map((_, index) => index)
-          .filter((index) => index !== question.correctIndex);
-        const wrongIndex = wrongIndexes[Math.floor(Math.random() * wrongIndexes.length)];
-
-        return {
-          ...prev,
-          computerQuestionIndex: prev.computerQuestionIndex + 1,
-          computerResult: isCorrect ? 'correct' : 'wrong',
-          computerScore: isCorrect ? prev.computerScore + 1 : prev.computerScore,
-        };
-      });
-    }, delayMs);
-
-    return () => window.clearTimeout(timer);
-  }, [state.status, state.computerQuestionIndex, state.questions.length]);
-
-  // ── advance to next question ───────────────────────────────────────────────
+  // ── Advance to next question ───────────────────────────────────────────────
   const nextQuestion = useCallback(() => {
     setState((prev) => {
-      if (prev.status !== 'playing' || prev.playerFinished) return prev;
+      if (prev.status !== 'playing') return prev;
 
       if (prev.currentQuestionIndex + 1 >= prev.questions.length) {
-        return { ...prev, playerFinished: true, phase: 'computer-turn' };
+        return {
+          ...prev,
+          phase: 'game-over',
+          playerFinished: true,
+        };
       }
 
       const nextIndex = prev.currentQuestionIndex + 1;
       questionStartTime.current = Date.now();
-      
+
       return {
         ...prev,
         currentQuestionIndex: nextIndex,
+        computerQuestionIndex: nextIndex,
         phase: 'player-turn',
         playerAnswerIndex: null,
         computerAnswerIndex: null,
@@ -202,16 +252,27 @@ export function useGameLogic() {
     });
   }, []);
 
+  // ── Auto-advance after showing result ──────────────────────────────────────
+  useEffect(() => {
+    if (state.phase !== 'result') return;
+
+    // Give user 2.5s when Hakim answers faster so they can comfortably see the question and right answer
+    const delayMs = state.playerResult === 'hakim-faster' ? 2500 : 1300;
+
+    const timer = window.setTimeout(nextQuestion, delayMs);
+    return () => window.clearTimeout(timer);
+  }, [state.phase, state.playerResult, nextQuestion]);
+
+  // ── Complete Game Sequence ─────────────────────────────────────────────────
   const completeGame = useCallback(async () => {
     if (
       state.status !== 'playing' ||
-      !state.playerFinished ||
-      state.computerQuestionIndex < state.questions.length ||
+      state.phase !== 'game-over' ||
       completionStarted.current
     ) return;
 
     completionStarted.current = true;
-    setState((prev) => prev.status === 'playing' ? { ...prev, status: 'loading' } : prev);
+    setState((prev) => ({ ...prev, status: 'loading' }));
 
     try {
       let finalStats = null;
@@ -241,24 +302,21 @@ export function useGameLogic() {
         error: err.message || 'Failed to submit game results.',
       }));
     }
-  }, [state]);
+  }, [state.status, state.phase, state.sessionId, state.answersList, state.token, state.playerScore, state.computerScore, state.questions.length]);
 
   useEffect(() => {
-    if (state.status === 'playing' && state.playerFinished && state.computerQuestionIndex >= state.questions.length) {
+    if (state.status === 'playing' && state.phase === 'game-over') {
       void completeGame();
     }
-  }, [state.status, state.playerFinished, state.computerQuestionIndex, state.questions.length, completeGame]);
+  }, [state.status, state.phase, completeGame]);
 
-  // ── auto-advance from result after RESULT_DISPLAY_SECONDS ─────────────────
-  useEffect(() => {
-    if (state.phase !== 'result') return;
-    const t = setTimeout(nextQuestion, RESULT_DISPLAY_SECONDS * 1000);
-    return () => clearTimeout(t);
-  }, [state.phase, nextQuestion]);
-
-  // Return to the welcome screen with a fresh server session for another run.
+  // Return to welcome screen with fresh server session
   const returnToWelcome = useCallback(async () => {
     completionStarted.current = false;
+    if (robotTimerRef.current) {
+      window.clearTimeout(robotTimerRef.current);
+      robotTimerRef.current = null;
+    }
 
     setState((prev) => ({
       ...prev,
@@ -319,6 +377,7 @@ export function useGameLogic() {
 
   return {
     state,
+    userProfile,
     currentQuestion,
     totalQuestions,
     startGame,
@@ -328,3 +387,4 @@ export function useGameLogic() {
     loadDemoMode,
   };
 }
+

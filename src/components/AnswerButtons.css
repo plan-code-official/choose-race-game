@@ -109,6 +109,10 @@
   animation: shake 0.4s ease;
 }
 
+.answer-btn.correct.robot-picked {
+  box-shadow: 0 0 18px #f59e0b;
+}
+
 
 
 /* ── Animations ─────────────────────────────────────────────────────────── */

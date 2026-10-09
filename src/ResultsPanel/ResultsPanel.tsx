@@ -83,7 +83,7 @@ export const ResultsPanel: React.FC<ResultsPanelProps> = ({
           {/* Visual numbers are hidden from screen readers; one summary replaces them. */}
           <strong className="results-num results-num--grade" aria-hidden="true">{correctPercent}/100</strong>
           <strong className="results-num results-num--correct" aria-hidden="true">{correct}</strong>
-          <strong className="results-num results-num--coins" aria-hidden="true">+{earnedCoins}</strong>
+          <strong className="results-num results-num--coins" aria-hidden="true">{earnedCoins}</strong>
           <strong className="results-num results-num--wrong" aria-hidden="true">{wrong}</strong>
           <p className="results-sr">
             {`الدرجة ${correctPercent} من 100. إجابات صحيحة ${correct}. إجابات خاطئة ${wrong}. فلوس مكتسبة ${earnedCoins}.`}

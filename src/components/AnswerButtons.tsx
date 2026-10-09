@@ -37,6 +37,10 @@ const AnswerButtons: React.FC<AnswerButtonsProps> = ({
       if (index === playerAnswerIndex) {
         classes.push('player-picked');
       }
+
+      if (index === computerAnswerIndex) {
+        classes.push('robot-picked');
+      }
     }
 
     return classes.join(' ');

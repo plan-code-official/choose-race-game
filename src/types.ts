@@ -27,7 +27,9 @@ export type Phase =
   | 'result'            // showing correct answer
   | 'game-over';
 
-export type AnswerResult = 'correct' | 'wrong' | 'timeout' | null;
+import { UserProfile } from './services/api';
+
+export type AnswerResult = 'correct' | 'wrong' | 'timeout' | 'hakim-faster' | null;
 
 export interface GameState {
   status: 'loading' | 'welcome' | 'playing' | 'game-over' | 'error';
@@ -48,4 +50,6 @@ export interface GameState {
   computerResult: AnswerResult;
   answersList: { questionId: number; selectedAnswer: string; timeTaken: number }[];
   finalStats: any | null; // FinalStats from API
+  userProfile?: UserProfile | null;
 }
+

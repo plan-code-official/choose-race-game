@@ -1,115 +1,154 @@
 .game-header-container {
   width: 100%;
-  max-width: 900px;
-  background: rgba(255, 255, 255, 0.1); /* light translucent */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 12px;
+  max-width: 960px;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 18px;
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* keeps progress bar inside border radius */
+  overflow: hidden;
   z-index: 10;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   direction: ltr; /* forced to LTR for precise flex layout */
-  margin-top: 10px;
-  margin-bottom: 30px; /* Space between header and question area */
+  margin: 0 auto;
+  flex-shrink: 0;
 }
 
 .game-header-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
+  padding: 8px 16px;
   width: 100%;
+  box-sizing: border-box;
 }
 
+/* Spacer keeps the middle group mathematically centered relative to the exit button */
 .gh-spacer {
-  width: 45px; /* same as exit button to balance space-between */
+  width: 44px;
   flex-shrink: 0;
 }
 
 .gh-middle-group {
   display: flex;
   align-items: center;
-  gap: 60px; /* Increased space between players and question area */
-  flex: 1;
   justify-content: center;
+  gap: clamp(18px, 4vw, 48px);
+  flex: 1;
+  min-width: 0;
 }
 
 .gh-player {
   display: flex;
   align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* Avatar wrapper */
+.gh-avatar-wrapper {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  flex-shrink: 0;
 }
 
 /* Avatar styling */
 .gh-avatar {
-  width: 55px;
-  height: 55px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
-  object-fit: contain;
+  object-fit: cover;
   background-color: transparent;
   z-index: 2;
-  /* Add slight shadow so it pops */
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+  display: block;
+}
+
+/* Accessory frame overlay (acts as frame/border over avatar) */
+.gh-avatar-frame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 132%;
+  height: 132%;
+  pointer-events: none;
+  z-index: 3;
+  object-fit: contain;
 }
 
 /* Score Pill */
 .gh-score-pill {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 8px;
   background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
   border-radius: 20px;
   height: 38px;
-  padding: 0 12px;
-  color: white;
+  padding: 0 14px;
+  color: #ffffff;
   font-family: 'Fredoka One', cursive, sans-serif;
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-weight: bold;
   z-index: 1;
-}
-
-/* Robot has avatar on left, pill on right */
-.gh-robot .gh-score-pill {
-  margin-left: -20px;
-  padding-left: 25px;
-}
-
-/* User has pill on left, avatar on right */
-.gh-user .gh-score-pill {
-  margin-right: -20px;
-  padding-right: 25px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  flex-shrink: 0;
 }
 
 .gh-coin {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+.gh-score {
+  line-height: 1;
+  display: inline-block;
 }
 
 /* Center Text */
 .gh-center-text {
   text-align: center;
-  color: white;
+  color: #ffffff;
   font-family: 'Fredoka One', cursive, sans-serif;
-  min-width: 80px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+  min-width: 65px;
+  flex-shrink: 0;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  user-select: none;
 }
 
 .gh-title {
-  font-size: 1.4rem;
-  line-height: 1.2;
+  font-size: 1rem;
+  line-height: 1.1;
+  opacity: 0.9;
+  letter-spacing: 0.3px;
+  margin-bottom: 2px;
 }
 
 .gh-count {
-  font-size: 1.6rem;
-  line-height: 1.2;
+  font-size: 1.45rem;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: 0.5px;
 }
 
 /* Exit Button */
 .gh-exit-btn {
+  width: 44px;
+  height: 44px;
   background: none;
   border: none;
   cursor: pointer;
@@ -117,207 +156,227 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s;
+  transition: transform 0.2s ease, filter 0.2s ease;
   flex-shrink: 0;
 }
 
 .gh-exit-btn img {
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.35));
 }
 
 .gh-exit-btn:hover {
   transform: scale(1.1);
+  filter: brightness(1.1);
 }
 
-/* Two opposing race lanes meet at the center of the header. */
-.gh-race-progress {
+.gh-exit-btn:active {
+  transform: scale(0.95);
+}
+
+/* Progress Bar (Right to Left) */
+.gh-progress-bar {
   width: 100%;
-  height: 36px;
-  display: flex;
-  direction: ltr;
-  padding: 0 10px 4px;
-  box-sizing: border-box;
-}
-
-.gh-race-lane {
-  position: relative;
-  flex: 1 1 50%;
-  min-width: 0;
-}
-
-.gh-race-lane--player {
-  border-left: 1px solid rgba(255, 255, 255, .35);
-}
-
-.gh-track-area {
-  position: absolute;
-  inset: 0 19px;
-}
-
-.gh-lane-track,
-.gh-lane-fill {
-  position: absolute;
-  top: 50%;
   height: 6px;
-  border-radius: 999px;
-  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.45);
+  position: relative;
+  direction: rtl;
 }
 
-.gh-lane-track {
-  left: 0;
-  right: 0;
-  background: rgba(255, 255, 255, .2);
-}
-
-.gh-lane-fill {
-  transition: width .45s ease;
-}
-
-.gh-lane-fill--robot {
-  left: 0;
-  background: #a976ff;
-  box-shadow: 0 0 8px rgba(169, 118, 255, .7);
-}
-
-.gh-lane-fill--player {
-  right: 0;
-  background: #71d9ff;
-  box-shadow: 0 0 8px rgba(113, 217, 255, .75);
-}
-
-.gh-racer-marker {
+.gh-progress-fill {
   position: absolute;
-  top: 50%;
-  width: 30px;
-  height: 30px;
-  object-fit: contain;
-  transform: translate(-50%, -50%);
-  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, .65));
-  transition: left .45s ease;
-  z-index: 2;
+  top: 0;
+  right: 0;
+  height: 100%;
+  background: #71d9ff;
+  transition: width 0.3s ease;
+  border-radius: 4px 0 0 4px;
+  box-shadow: 0 0 10px rgba(113, 217, 255, 0.7);
 }
 
-/* ── Responsive Mobile (down to 280px) ──────────────────────────────── */
-@media (max-width: 600px) {
+/* ── Tablet / Intermediate Screens (<= 768px) ───────────────────────── */
+@media (max-width: 768px) {
   .game-header-container {
-    border-radius: 0 0 12px 12px;
-    margin-top: 0;
-    margin-bottom: 20px;
-    border-top: none;
-    border-left: none;
-    border-right: none;
+    border-radius: 16px;
   }
-  
+
   .game-header-content {
-    padding: 6px 8px;
+    padding: 7px 14px;
   }
-  
+
+  .gh-spacer {
+    width: 38px;
+  }
+
   .gh-middle-group {
-    gap: 15px; /* Increased from 10px */
+    gap: clamp(14px, 3vw, 30px);
   }
-  
-  .gh-avatar {
-    width: 40px;
-    height: 40px;
+
+  .gh-player {
+    gap: 9px;
   }
-  
+
+  .gh-avatar-wrapper {
+    width: 46px;
+    height: 46px;
+  }
+
   .gh-score-pill {
-    height: 28px;
-    font-size: 1rem;
-    padding: 0 8px;
+    height: 33px;
+    padding: 0 11px;
+    gap: 7px;
+    font-size: 1.15rem;
+    border-radius: 18px;
   }
-  
-  .gh-robot .gh-score-pill {
-    margin-left: -15px;
-    padding-left: 20px;
-  }
-  
-  .gh-user .gh-score-pill {
-    margin-right: -15px;
-    padding-right: 20px;
-  }
-  
+
   .gh-coin {
-    width: 16px;
-    height: 16px;
+    width: 19px;
+    height: 19px;
   }
-  
+
   .gh-title {
+    font-size: 0.95rem;
+  }
+
+  .gh-count {
+    font-size: 1.3rem;
+  }
+
+  .gh-exit-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .gh-exit-btn img {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+/* ── Mobile Screens (<= 520px) ──────────────────────────────────────── */
+@media (max-width: 520px) {
+  .game-header-container {
+    border-radius: 14px;
+  }
+
+  .game-header-content {
+    padding: 6px 10px;
+  }
+
+  .gh-spacer {
+    width: 32px;
+  }
+
+  .gh-middle-group {
+    gap: clamp(8px, 2.5vw, 16px);
+  }
+
+  .gh-player {
+    gap: 7px;
+  }
+
+  .gh-avatar-wrapper {
+    width: 38px;
+    height: 38px;
+  }
+
+  .gh-score-pill {
+    height: 29px;
+    padding: 0 8px;
+    gap: 5px;
+    font-size: 1rem;
+    border-radius: 14px;
+  }
+
+  .gh-coin {
+    width: 17px;
+    height: 17px;
+  }
+
+  .gh-center-text {
+    min-width: 50px;
+  }
+
+  .gh-title {
+    font-size: 0.85rem;
+  }
+
+  .gh-count {
     font-size: 1.1rem;
   }
-  
-  .gh-count {
-    font-size: 1.2rem;
-  }
-  
-  .gh-exit-btn img {
+
+  .gh-exit-btn {
     width: 32px;
     height: 32px;
   }
-  
-  .gh-spacer {
-    width: 32px;
+
+  .gh-exit-btn img {
+    width: 30px;
+    height: 30px;
   }
 }
 
-@media (max-width: 380px) {
-  .game-header-content {
-    flex-wrap: nowrap;
-    justify-content: space-between;
-  }
-  
-  .gh-exit-btn {
-    flex: 0 0 30px;
-    width: 30px;
-    margin: 0;
-    padding: 0;
-    border: 0;
+/* ── Very Small Screens (<= 360px down to 280px) ────────────────────── */
+@media (max-width: 360px) {
+  .game-header-container {
+    border-radius: 12px;
   }
 
-  .gh-exit-btn img {
-    width: 28px;
-    height: 28px;
+  .game-header-content {
+    padding: 5px 6px;
   }
-  
+
   .gh-spacer {
-    display: none;
+    width: 26px;
   }
 
   .gh-middle-group {
-    flex: 1 1 auto;
-    min-width: 0;
-    justify-content: space-between;
     gap: 4px;
   }
-  
-  .gh-avatar {
+
+  .gh-player {
+    gap: 4px;
+  }
+
+  .gh-avatar-wrapper {
     width: 32px;
     height: 32px;
   }
 
   .gh-score-pill {
-    height: 24px;
-    font-size: 0.9rem;
+    height: 25px;
+    padding: 0 6px;
+    gap: 4px;
+    font-size: 0.85rem;
     border-radius: 12px;
   }
-  
-  .gh-robot .gh-score-pill {
-    margin-left: -12px;
-    padding-left: 15px;
+
+  .gh-coin {
+    width: 14px;
+    height: 14px;
   }
-  
-  .gh-user .gh-score-pill {
-    margin-right: -12px;
-    padding-right: 15px;
+
+  .gh-center-text {
+    min-width: 44px;
   }
-  
+
   .gh-title {
-    font-size: 0.9rem;
+    font-size: 0.75rem;
   }
-  
+
   .gh-count {
-    font-size: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .gh-exit-btn {
+    width: 26px;
+    height: 26px;
+  }
+
+  .gh-exit-btn img {
+    width: 24px;
+    height: 24px;
   }
 }

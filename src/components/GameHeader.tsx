@@ -11,9 +11,9 @@ interface GameHeaderProps {
   totalQuestions: number;
   playerScore: number;
   computerScore: number;
-  robotQuestionIndex: number;
-  playerAnsweredCurrent: boolean;
   onExit: () => void;
+  playerAvatar?: string | null;
+  playerAccessory?: string | null;
 }
 
 const GameHeader: React.FC<GameHeaderProps> = ({ 
@@ -21,13 +21,11 @@ const GameHeader: React.FC<GameHeaderProps> = ({
   totalQuestions, 
   playerScore, 
   computerScore,
-  robotQuestionIndex,
-  playerAnsweredCurrent,
-  onExit 
+  onExit,
+  playerAvatar,
+  playerAccessory,
 }) => {
-  const robotProgress = totalQuestions > 0 ? Math.min(100, (robotQuestionIndex / totalQuestions) * 100) : 0;
-  const playerCompleted = Math.min(totalQuestions, currentQuestionIndex + (playerAnsweredCurrent ? 1 : 0));
-  const playerProgress = totalQuestions > 0 ? (playerCompleted / totalQuestions) * 100 : 0;
+  const progressPercent = totalQuestions > 0 ? ((currentQuestionIndex + 1) / totalQuestions) * 100 : 0;
 
   return (
     <div className="game-header-container">
@@ -36,16 +34,18 @@ const GameHeader: React.FC<GameHeaderProps> = ({
         <div className="gh-spacer"></div>
 
         <div className="gh-middle-group">
-          {/* Robot / Computer */}
+          {/* Robot / Hakim */}
           <div className="gh-player gh-robot">
-            <img src={robotImg} alt="Robot" className="gh-avatar" />
+            <div className="gh-avatar-wrapper">
+              <img src={robotImg} alt="حكيم" className="gh-avatar" />
+            </div>
             <div className="gh-score-pill">
               <img src={daddcoinImg} alt="Coin" className="gh-coin" />
               <span className="gh-score">{computerScore}</span>
             </div>
           </div>
 
-          {/* Center */}
+          {/* Center: Question Counter */}
           <div className="gh-center-text">
             <div className="gh-title">السؤال</div>
             <div className="gh-count">{currentQuestionIndex + 1}/{totalQuestions}</div>
@@ -57,31 +57,38 @@ const GameHeader: React.FC<GameHeaderProps> = ({
               <span className="gh-score">{playerScore}</span>
               <img src={daddcoinImg} alt="Coin" className="gh-coin" />
             </div>
-            <img src={userImg} alt="User" className="gh-avatar" />
+            <div className="gh-avatar-wrapper">
+              <img 
+                src={playerAvatar || userImg} 
+                alt="اللاعب" 
+                className="gh-avatar"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = userImg;
+                }}
+              />
+              {playerAccessory && (
+                <img
+                  src={playerAccessory}
+                  alt="Frame"
+                  className="gh-avatar-frame"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              )}
+            </div>
           </div>
         </div>
 
         {/* Exit Button */}
-        <button className="gh-exit-btn" onClick={onExit}>
-          <img src={exitBtnImg} alt="Exit" />
+        <button className="gh-exit-btn" onClick={onExit} aria-label="خروج">
+          <img src={exitBtnImg} alt="خروج" />
         </button>
       </div>
 
-      <div className="gh-race-progress" aria-label="تقدم اللاعب والروبوت">
-        <div className="gh-race-lane gh-race-lane--robot" aria-label={`تقدم الروبوت ${robotQuestionIndex} من ${totalQuestions}`}>
-          <div className="gh-track-area">
-            <div className="gh-lane-track" />
-            <div className="gh-lane-fill gh-lane-fill--robot" style={{ width: `${robotProgress}%` }} />
-            <img className="gh-racer-marker" src={robotImg} alt="" style={{ left: `${robotProgress}%` }} />
-          </div>
-        </div>
-        <div className="gh-race-lane gh-race-lane--player" aria-label={`تقدم اللاعب ${playerCompleted} من ${totalQuestions}`}>
-          <div className="gh-track-area">
-            <div className="gh-lane-track" />
-            <div className="gh-lane-fill gh-lane-fill--player" style={{ width: `${playerProgress}%` }} />
-            <img className="gh-racer-marker" src={userImg} alt="" style={{ left: `${100 - playerProgress}%` }} />
-          </div>
-        </div>
+      {/* Normal clean single progress bar */}
+      <div className="gh-progress-bar">
+        <div className="gh-progress-fill" style={{ width: `${progressPercent}%` }}></div>
       </div>
     </div>
   );
