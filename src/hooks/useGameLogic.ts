@@ -131,7 +131,22 @@ export function useGameLogic() {
   const totalQuestions = state.questions.length;
 
   const startGame = useCallback(() => {
-    setState((prev) => ({ ...prev, status: 'playing', phase: 'player-turn' }));
+    setState((prev) => ({
+      ...prev,
+      status: 'playing',
+      phase: 'player-turn',
+      currentQuestionIndex: 0,
+      computerQuestionIndex: 0,
+      playerScore: 0,
+      computerScore: 0,
+      playerAnswerIndex: null,
+      computerAnswerIndex: null,
+      playerResult: null,
+      computerResult: null,
+      playerFinished: false,
+      answersList: [],
+      error: null,
+    }));
     questionStartTime.current = Date.now();
   }, []);
 
@@ -274,9 +289,12 @@ export function useGameLogic() {
     completionStarted.current = true;
     setState((prev) => ({ ...prev, status: 'loading' }));
 
+    const searchParams = new URLSearchParams(window.location.search);
+    const effectiveToken = state.token || searchParams.get('token') || searchParams.get('accesstoken') || '';
+
     try {
       let finalStats = null;
-      if (state.sessionId === 'demo-session') {
+      if (state.sessionId === 'demo-session' || !state.sessionId) {
         const totalQ = Math.max(1, state.questions.length);
         const pct = Math.round((state.playerScore / totalQ) * 100);
         finalStats = {
@@ -287,8 +305,8 @@ export function useGameLogic() {
           experience: state.playerScore * 10,
         };
       } else {
-        await submitAnswers(state.sessionId!, state.answersList, state.token!);
-        finalStats = await completeSession(state.sessionId!, state.token!);
+        await submitAnswers(state.sessionId, state.answersList, effectiveToken);
+        finalStats = await completeSession(state.sessionId, effectiveToken);
       }
 
       if (state.playerScore > state.computerScore) playWinSound();
@@ -296,11 +314,21 @@ export function useGameLogic() {
 
       setState((prev) => ({ ...prev, status: 'game-over', phase: 'game-over', finalStats }));
     } catch (err: any) {
-      setState((prev) => ({
-        ...prev,
-        status: 'error',
-        error: err.message || 'Failed to submit game results.',
-      }));
+      console.warn('Failed to submit game results to server, falling back to local stats:', err);
+      const totalQ = Math.max(1, state.questions.length);
+      const pct = Math.round((state.playerScore / totalQ) * 100);
+      const fallbackStats = {
+        score: pct,
+        percentage: pct,
+        stars: pct >= 80 ? 3 : pct >= 50 ? 2 : pct > 0 ? 1 : 0,
+        coins: state.playerScore * 2,
+        experience: state.playerScore * 10,
+      };
+
+      if (state.playerScore > state.computerScore) playWinSound();
+      else if (state.computerScore > state.playerScore) playLoseSound();
+
+      setState((prev) => ({ ...prev, status: 'game-over', phase: 'game-over', finalStats: fallbackStats }));
     }
   }, [state.status, state.phase, state.sessionId, state.answersList, state.token, state.playerScore, state.computerScore, state.questions.length]);
 
@@ -318,14 +346,21 @@ export function useGameLogic() {
       robotTimerRef.current = null;
     }
 
+    questionStartTime.current = 0;
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const effectiveLessonId = state.lessonId || searchParams.get('lessonId') || '';
+    const effectiveToken = state.token || searchParams.get('token') || searchParams.get('accesstoken') || '';
+
+    // Immediately restore welcome screen and reset game state
     setState((prev) => ({
       ...prev,
-      status: 'loading',
+      status: 'welcome',
+      phase: 'player-turn',
       error: null,
       currentQuestionIndex: 0,
       computerQuestionIndex: 0,
       playerFinished: false,
-      phase: 'player-turn',
       playerScore: 0,
       computerScore: 0,
       playerAnswerIndex: null,
@@ -334,33 +369,24 @@ export function useGameLogic() {
       computerResult: null,
       answersList: [],
       finalStats: null,
+      lessonId: effectiveLessonId || prev.lessonId,
+      token: effectiveToken || prev.token,
     }));
 
-    questionStartTime.current = 0;
-
     if (state.sessionId === 'demo-session') {
-      setState((prev) => ({ ...prev, status: 'welcome', sessionId: 'demo-session' }));
       return;
     }
 
-    if (!state.lessonId || !state.token) {
-      setState((prev) => ({
-        ...prev,
-        status: 'error',
-        error: 'Missing lessonId or token in URL parameters.',
-      }));
-      return;
-    }
-
-    try {
-      const sessionId = await startGameSession(state.lessonId, state.token);
-      setState((prev) => ({ ...prev, status: 'welcome', sessionId }));
-    } catch (err: any) {
-      setState((prev) => ({
-        ...prev,
-        status: 'error',
-        error: err.message || 'Failed to start a new game session.',
-      }));
+    // Attempt to start a fresh server session in the background
+    if (effectiveLessonId) {
+      try {
+        const newSessionId = await startGameSession(effectiveLessonId, effectiveToken);
+        if (newSessionId) {
+          setState((prev) => ({ ...prev, sessionId: newSessionId }));
+        }
+      } catch (err: any) {
+        console.warn('Could not start new server session on retry, keeping existing session:', err);
+      }
     }
   }, [state.lessonId, state.sessionId, state.token]);
 
