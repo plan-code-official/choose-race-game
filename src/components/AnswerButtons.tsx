@@ -46,17 +46,27 @@ const AnswerButtons: React.FC<AnswerButtonsProps> = ({
     return classes.join(' ');
   };
 
+  const isOdd = options.length % 2 !== 0;
+
   return (
-    <div className="answer-buttons">
-      {options.map((option, index) => (
-        <div key={index} className="btn-wrapper">
-          <button
-            className={getButtonClass(index)}
-            onClick={() => !isDisabled && onAnswer(index)}
-            disabled={isDisabled}
+    <div
+      className={`answer-buttons ${isOdd ? 'is-odd' : 'is-even'}`}
+      data-count={options.length}
+    >
+      {options.map((option, index) => {
+        const isLastOdd = isOdd && index === options.length - 1;
+        return (
+          <div
+            key={index}
+            className={`btn-wrapper ${isLastOdd ? 'is-last-odd' : ''}`.trim()}
           >
-            <span className="btn-text">{option.text}</span>
-          </button>
+            <button
+              className={getButtonClass(index)}
+              onClick={() => !isDisabled && onAnswer(index)}
+              disabled={isDisabled}
+            >
+              <span className="btn-text">{option.text}</span>
+            </button>
           {option.imageUrl && (
             <button
               type="button"
@@ -65,7 +75,7 @@ const AnswerButtons: React.FC<AnswerButtonsProps> = ({
               aria-label="تكبير صورة الإجابة"
               onClick={() => setZoomedImage(option.imageUrl)}
             >
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5M10.8 7.5v6.6M7.5 10.8h6.6"/></svg>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 5 5M10.8 7.5v6.6M7.5 10.8h6.6" /></svg>
             </button>
           )}
           {option.audioUrl && (
@@ -79,12 +89,13 @@ const AnswerButtons: React.FC<AnswerButtonsProps> = ({
                 audio.play().catch(console.error);
               }}
             >
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z" /><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" /></svg>
             </button>
           )}
         </div>
-      ))}
-      
+        );
+      })}
+
       {zoomedImage && (
         <ImageModal
           imageUrl={zoomedImage}
