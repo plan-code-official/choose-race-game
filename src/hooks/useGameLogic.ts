@@ -67,6 +67,7 @@ function mapApiQuestion(q: ApiQuestion): Question {
 export function useGameLogic() {
   const [state, setState] = useState<GameState>(makeInitialState);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(() => getUserProfile());
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const questionStartTime = useRef<number>(0);
   const completionStarted = useRef(false);
   const robotTimerRef = useRef<number | null>(null);
@@ -287,7 +288,7 @@ export function useGameLogic() {
     ) return;
 
     completionStarted.current = true;
-    setState((prev) => ({ ...prev, status: 'loading' }));
+    setIsSubmitting(true);
 
     const searchParams = new URLSearchParams(window.location.search);
     const effectiveToken = state.token || searchParams.get('token') || searchParams.get('accesstoken') || '';
@@ -329,6 +330,8 @@ export function useGameLogic() {
       else if (state.computerScore > state.playerScore) playLoseSound();
 
       setState((prev) => ({ ...prev, status: 'game-over', phase: 'game-over', finalStats: fallbackStats }));
+    } finally {
+      setIsSubmitting(false);
     }
   }, [state.status, state.phase, state.sessionId, state.answersList, state.token, state.playerScore, state.computerScore, state.questions.length]);
 
@@ -403,6 +406,7 @@ export function useGameLogic() {
 
   return {
     state,
+    isSubmitting,
     userProfile,
     currentQuestion,
     totalQuestions,

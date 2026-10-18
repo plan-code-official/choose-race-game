@@ -13,7 +13,7 @@ import { preloadAllCoreAssets } from '../utils/preloadAssets';
 import './GameScreen.css';
 
 const GameScreen: React.FC = () => {
-  const { state, userProfile, currentQuestion, totalQuestions, startGame, playerAnswer, returnToWelcome } = useGameLogic();
+  const { state, isSubmitting, userProfile, currentQuestion, totalQuestions, startGame, playerAnswer, returnToWelcome } = useGameLogic();
 
   const [showCelebration, setShowCelebration] = useState(false);
   const [showResults, setShowResults] = useState(false);
@@ -88,16 +88,13 @@ const GameScreen: React.FC = () => {
     );
   }
 
-  if (status === 'loading' && state.answersList.length > 0) {
-    return (
-      <div className="game-screen loading-screen" role="status" aria-live="polite">
-        <div className="spinner" aria-hidden="true" />
-      </div>
-    );
-  }
-
   return (
     <div className="game-screen">
+      {isSubmitting && (
+        <div className="submitting-overlay" aria-busy="true">
+          <div className="submitting-spinner" />
+        </div>
+      )}
 
       <GameHeader 
         currentQuestionIndex={currentQuestionIndex}
