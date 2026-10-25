@@ -1,6 +1,6 @@
-const STUDENT_API_BASE = 'https://learning-platform-1euu.onrender.com/api/v1';
-const USER_API_BASE = 'https://learning-platform-1euu.onrender.com/api/v1';
-const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://learning-platform-1euu.onrender.com';
+const STUDENT_API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://api.medinaty.com/api/v1';
+const USER_API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://api.medinaty.com/api/v1';
+const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.medinaty.com';
 const BASE_URL = `${API_URL}/api/v1`;
 const GAME_ID = 13;
 
